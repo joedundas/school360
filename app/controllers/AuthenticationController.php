@@ -44,6 +44,8 @@ class AuthenticationController extends BaseController {
             $schoolDTO = new schoolDTO();
             $schoolDTO->hydrate($currentSchoolId);
 
+            $authorizationController = new AuthorizationController();
+            $authorizationController->getAuthorizationForUserIdAtSchoolIdAsUserType($userDto,$schoolDTO);
             userController::saveUserToSession($userDto->asArray());
             Session::put('currentSchool',$schoolDTO->asArray());
 
