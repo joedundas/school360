@@ -1,6 +1,6 @@
 <?php
 
-class userFactory
+class UserFactory
 {
 
     static public function createDTO($type) {

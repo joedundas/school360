@@ -55,7 +55,7 @@ class UserController extends Controller
         }
         return $userDto;
     }
-    public function saveUserToSession($userInfo) {
+    static public function saveUserToSession($userInfo) {
         Session::put('user',$userInfo);
     }
 

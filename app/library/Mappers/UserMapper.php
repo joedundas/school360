@@ -3,6 +3,7 @@
 class UserMapper
 {
 
+
     //  List of user types and associated data (e.g. database ids)
     static protected $userTypes = array(
         'teacher'=>array('id'=>'teacherId'),
@@ -10,6 +11,14 @@ class UserMapper
         'staff'=>array('id'=>'staffId'),
         'parent'=>array('id'=>'parentId')
     );
+
+    static public function setCommonDemographicsFromQueryToDTO($queryResult,$dto) {
+
+        $dto->setUserId($queryResult->userId);
+        $dto->setFirstName($queryResult->firstName);
+        $dto->setLastName($queryResult->lastName);
+        $dto->setPrimaryEmail($queryResult->email);
+    }
 
     static public function getUserTypeArrayFromAuthUserModel($userModel) {
         $userTypes = UserMapper::getUserTypeInformation();

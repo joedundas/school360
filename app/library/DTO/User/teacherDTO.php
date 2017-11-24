@@ -11,6 +11,7 @@ class teacherDTO extends AbstractUserDTO
     protected $userType = 'teacher';
     public function __construct()
     {
-
+        $this->mapper = new TeacherMapper();
+        parent::__construct();
     }
 }

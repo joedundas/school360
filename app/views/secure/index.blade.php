@@ -1,6 +1,8 @@
 <?php
 $goToPage = '';
-
+$SESSION = array(
+  'user'=> Session::get('user')
+);
 ?>
 <!DOCTYPE html>
 <html lang="en">

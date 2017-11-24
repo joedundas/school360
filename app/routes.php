@@ -5,12 +5,16 @@ Route::get('login', function()
     return View::make('login');
 });
 
-Route::get('secure', function()
-{
-    return View::make('secure/index');
-});
+//Route::get('secure', function()
+//{
+//    return View::make('secure/index');
+//});
 
-Route::match(array('GET','POST'),'dashboard',array(function() {
+Route::get('secure', array('before'=>'auth', function() {
+    return View::make('secure/index');
+}));
+
+Route::match(array('GET','POST'),'dashboard',array('before'=>'auth',function() {
     $bladeFile = 'secure.dashboard.admin.layout';
     return View::make($bladeFile);
 }));
@@ -34,7 +38,7 @@ Route::match(array('GET','POST'),'dashboard',array(function() {
 //
 //
 Route::post('login','AuthenticationController@login');
-//Route::match(array('GET','POST'),'doLogout','AuthenticationController@doLogout');
+Route::match(array('GET','POST'),'doLogout','AuthenticationController@doLogout');
 //
 //// AJAX Responses
 //Route::get('utilities/stateList/{searchTerm?}','AjaxController@getListOfStates');

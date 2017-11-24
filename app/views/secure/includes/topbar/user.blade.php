@@ -1,6 +1,6 @@
 <li class="">
     <a href="javascript" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-        <img src="images/img.jpg" alt=""> INSERT NAME HERE
+        <img src="images/img.jpg" alt=""> <?php echo $SESSION['user']['name']['first'] . ' ' . $SESSION['user']['name']['last']; ?>
         <span class=" fa fa-angle-down"></span>
     </a>
     <ul class="dropdown-menu dropdown-usermenu pull-right">

@@ -4,9 +4,9 @@
  * Created by PhpStorm.
  * User: joedundas
  * Date: 11/20/17
- * Time: 12:41 PM
+ * Time: 12:43 PM
  */
-abstract class AbstractUserRepository
+class studentRepository extends AbstractUserRepository
 {
 
 }

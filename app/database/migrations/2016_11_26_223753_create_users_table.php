@@ -21,9 +21,14 @@ class CreateUsersTable extends Migration {
             $table->unsignedBigInteger('parentId')->default(0);
             $table->unsignedBigInteger('studentId')->default(0);
 			$table->string('email')->unique();
-			$table->string('password');
+			$table->string('password')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
+			$table->rememberToken();
+			$table->char('canLogIn',1)->default('N');
+			$table->datetime('suspend_until')->nullable();
+			$table->unsignedBigInteger('accountRequestId')->default(0);
+
 		});
 	}
 

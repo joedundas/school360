@@ -6,12 +6,12 @@
  * Date: 11/20/17
  * Time: 9:06 AM
  */
-class studentDTO extends AbstractUserDTO
+class parentDTO extends AbstractUserDTO
 {
-    protected $userType = 'student';
+    protected $userType = 'parent';
     public function __construct()
     {
-        $this->mapper = new StudentMapper();
+        $this->mapper = new ParentMapper();
         parent::__construct();
     }
 }
