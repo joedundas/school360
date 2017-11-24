@@ -8,7 +8,6 @@ class AuthenticationController extends BaseController {
 
     }
     public function login() {
-        $data = Input::all();
         $response = DependencyInjection::ApiResponse();
         $userdata = array(
             'email'=>Input::get('data.email'),
@@ -22,7 +21,7 @@ class AuthenticationController extends BaseController {
             );
             $userDto = UserFactory::createDTO($userType);
             $userDto->hydrate(Auth::user()->id);
-            userController::saveUserToSession($userDto->asArray());
+
 
             $currentSchoolId = null;
             $currentSchoolDTO = null;
@@ -38,18 +37,20 @@ class AuthenticationController extends BaseController {
             else {
                 $currentSchoolId = $userDto->getDefaultSchoolId();
             }
+
+            if($currentSchoolId === null) {
+                throw new Exception('Could not find school ID associated with user ' . Auth::user()->id . ')  upon authentication AuthenticationController@login');
+            }
             $schoolDTO = new schoolDTO();
             $schoolDTO->hydrate($currentSchoolId);
 
+            userController::saveUserToSession($userDto->asArray());
             Session::put('currentSchool',$schoolDTO->asArray());
 
         }
         else {
             $response->insertGlobalErrors(array('Could not authenticate user'));
         }
-//        else {
-//            $response->insertGlobalErrors(array('Could not authenticate user'));
-//        }
          return Response::make($response->toJson());
     }
 
