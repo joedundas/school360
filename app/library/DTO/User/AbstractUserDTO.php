@@ -44,9 +44,18 @@ class AbstractUserDTO implements UserDTOInterface
         foreach($schools as $idx=>$school) {
             $this->schools[] = array(
                 'schoolId'=>$school->schoolId,
-                'name'=>$school->schoolName
+                'name'=>$school->schoolName,
+                'default'=>$school->default_school
             );
         }
+    }
+    public function getDefaultSchoolId() {
+        for($i=0; $i<count($this->schools); $i++) {
+            if($this->schools[$i]['default'] == 'Y') {
+                return $this->schools[$i]['schoolId'];
+            }
+        }
+        return false;
     }
     public function setUserId($userId) {
         $this->userid = $userId;

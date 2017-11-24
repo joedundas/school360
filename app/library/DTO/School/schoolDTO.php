@@ -13,9 +13,12 @@ class schoolDTO extends AbstractSchoolDTO
     public function __construct()
     {
 
+        $this->mapper = new SchoolMapper();
+
+        parent::__construct();
     }
 
-    public function asArray() {
-
+    public function addSchoolTypeSpecificToArray($arr) {
+        return $arr;
     }
 }

@@ -29,24 +29,20 @@ class AuthenticationController extends BaseController {
             $schools = $userDto->getSchoolsArray();
             if(count($schools) == 0) {
                 //@TODO handle if there is no school
+                echo "No School Associated with this user";
+                exit;
             }
             elseif(count($schools) == 1) {
                 $currentSchoolId = $schools[0]['schoolId'];
             }
             else {
-                //@TODO handle multiple schools associated with user
+                $currentSchoolId = $userDto->getDefaultSchoolId();
             }
             $schoolDTO = new schoolDTO();
             $schoolDTO->hydrate($currentSchoolId);
+
             Session::put('currentSchool',$schoolDTO->asArray());
-           // $userRepository = UserFactory::createRepository($userType);
-////            $userController = new UserController();
-////            $userController->loadUserToSession();
-////
-////            $settingsController = new SettingsController();
-////            $settingsController->getUserSettings();
-//
-//
+
         }
         else {
             $response->insertGlobalErrors(array('Could not authenticate user'));

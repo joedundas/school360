@@ -12,6 +12,7 @@ class AbstractSchoolDTO
     protected $schoolRepository;
     protected $mapper = null;
     protected $info = array(
+        'schoolId'=>'',
         'name'=>'',
         'primary-address'=>array(
             'street'=>'',
@@ -28,8 +29,19 @@ class AbstractSchoolDTO
         $this->schoolRepository = new schoolRepository();
     }
 
+    public function asArray() {
+        $arr = $this->info;
+        return $this->addSchoolTypeSpecificToArray($arr);
+    }
     public function hydrate($schoolId) {
-
+        $queryResult = $this->schoolRepository->getSingleSchoolById($schoolId);
+        $this->mapper->mapQueryResultToDTO(
+            $queryResult[0],
+            $this
+        );
+    }
+    public function setSchoolId($id) {
+        $this->info['schoolId'] = $id;
     }
     public function setName($name) {
         $this->info['name'] = $name;

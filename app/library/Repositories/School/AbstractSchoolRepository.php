@@ -18,7 +18,7 @@ class AbstractSchoolRepository extends AbstractRepository
             $query->leftJoin('schools', 'user_school_mapper.schoolId', '=', 'schools.id');
         }
 
-        $selections = array('user_school_mapper.schoolId as schoolId');
+        $selections = array('user_school_mapper.schoolId as schoolId','user_school_mapper.default_school as default_school');
 
         if($includeSchoolNames) {
             // select school name from schools table

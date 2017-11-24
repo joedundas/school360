@@ -34,6 +34,7 @@ return array(
     'Normalizer' => $vendorDir . '/patchwork/utf8/src/Normalizer.php',
     'ParentMapper' => $baseDir . '/app/library/Mappers/TeacherMapper.php',
     'RecurrenceUtilities' => $baseDir . '/app/library/Utilities/RecurrenceUtilities.php',
+    'SchoolMapper' => $baseDir . '/app/library/Mappers/SchoolMapper.php',
     'SeedCourses' => $baseDir . '/app/database/seeds/SeedCourses.php',
     'SeedGradeLevels' => $baseDir . '/app/database/seeds/SeedGradeLevels.php',
     'SeedStatesUS' => $baseDir . '/app/database/seeds/SeedStatesUS.php',
