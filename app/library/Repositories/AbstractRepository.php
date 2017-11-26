@@ -8,7 +8,14 @@
  */
 class AbstractRepository
 {
-    static public function performQuery($query) {
-            return $query->get();
+    static public function performQuery($query,$resultsType = 'FETCH_CLASS') {
+        if($resultsType == 'FETCH_ASSOC') {
+            DB::setFetchMode(PDO::FETCH_ASSOC);
+        }
+        else {
+            DB::setFetchMode(PDO::FETCH_CLASS);
+        }
+        return $query->get();
+        DB::setFetchMode(PDO::FETCH_CLASS);
     }
 }

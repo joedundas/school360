@@ -6,11 +6,10 @@
  * Date: 11/20/17
  * Time: 12:43 PM
  */
-class staffRepository extends AbstractUserRepository
+class userRepository extends AbstractUserRepository
 {
-    protected $userType = 'staff';
-    protected $query;
 
+    protected $query;
 
 
     public function get($staffId) {

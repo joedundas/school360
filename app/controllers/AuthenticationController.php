@@ -16,38 +16,33 @@ class AuthenticationController extends BaseController {
         );
         Session::flush();
         if(Auth::attempt($userdata)) {
-            $userType = UserMapper::getUserTypeBasedOnIdArray(
-              UserMapper::getUserTypeArrayFromAuthUserModel(Auth::user()->toArray())
-            );
-            $userDto = UserFactory::createDTO($userType);
+
+            $userDto = new userDTO();
             $userDto->hydrate(Auth::user()->id);
 
 
-            $currentSchoolId = null;
-            $currentSchoolDTO = null;
-            $schools = $userDto->getSchoolsArray();
-            if(count($schools) == 0) {
-                //@TODO handle if there is no school
-                echo "No School Associated with this user";
-                exit;
+            $currentSchoolId = $userDto->getDefaultSchoolId();
+            if(!$currentSchoolId) {
+                //@TODO Handle when there is not a default school found
+                throw new Exception('Could not find a default school ID');
             }
-            elseif(count($schools) == 1) {
-                $currentSchoolId = $schools[0]['schoolId'];
+            $currentUserRoleId = $userDto->getDefaultRoleIdForSchoolId($currentSchoolId);
+            if(!$currentUserRoleId) {
+                //@TODO
+                // Handle when there is not default user role ID.  I do not think this is reachable,
+                // because school ID would be false.
+                throw new Exception('Could not find a default user role ID for school ID [' . $currentSchoolId . ']');
             }
-            else {
-                $currentSchoolId = $userDto->getDefaultSchoolId();
-            }
+            $userDto->setCurrentSchoolId($currentSchoolId);
+            $userDto->setCurrentUserRoleId($currentUserRoleId);
 
-            if($currentSchoolId === null) {
-                throw new Exception('Could not find school ID associated with user ' . Auth::user()->id . ')  upon authentication AuthenticationController@login');
-            }
             $schoolDTO = new schoolDTO();
             $schoolDTO->hydrate($currentSchoolId);
-
-            $authorizationController = new AuthorizationController();
-            $authorizationController->getAuthorizationForUserIdAtSchoolIdAsUserType($userDto,$schoolDTO);
-            userController::saveUserToSession($userDto->asArray());
-            Session::put('currentSchool',$schoolDTO->asArray());
+//
+//            $authorizationController = new AuthorizationController();
+//            $authorizationController->setAuthorizationForUserIdAtSchoolIdAsUserType($userDto,$schoolDTO);
+//            userController::saveUserToSession($userDto->asArray());
+//            Session::put('currentSchool',$schoolDTO->asArray());
 
         }
         else {

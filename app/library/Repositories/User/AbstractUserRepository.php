@@ -10,13 +10,39 @@ abstract class AbstractUserRepository extends AbstractRepository implements User
 {
 
 
-    public function getSingleUserByUserId($userId) {
-        $userTypeInformation = UserMapper::getUserTypeInformation($this->userType);
-        $dbIdentifier = $userTypeInformation['id'];
+    public function getSingleUserByUserId($userId,$args = array()) {
+        $onlyFetchActiveRoles = isset($args['onlyFetchActiveRoles']) ? $args['onlyFetchActiveRoles'] : true;
+        if(!isset($args['selections'])) {
+            $selections = array(
+                'users.id as userId',
+                'user_roles.id as userRoleId',
+                'users.namePrefix as namePrefix',
+                'users.firstName as firstName',
+                'users.lastName as lastName',
+                'users.nameSuffix as nameSuffix',
+                'users.email as email',
+                'users.canLogin as userCanLogin',
+                'user_roles.role as userRole',
+                'user_roles.schoolId as schoolId',
+                'user_roles.canLogin as userRoleCanLogin',
+                'user_roles.default_role as defaultRoleAtSchool',
+                'user_roles.beginDate as roleBeginDate',
+                'user_roles.endDate as roleEndDate'
+            );
+        }
+        else {
+            $selections = $args['selections'];
+        }
+
         $this->query = DB::table('users');
-        $this->query->leftJoin($this->userType,"users." . $dbIdentifier,"=",$this->userType . ".id");
-        $this->query->select(array('users.id as userId','users.email as email',$this->userType . '.*'));
+        $this->query->leftJoin('user_roles','users.id','=','user_roles.userId');
+
+        $this->query->select($selections);
         $this->query->where('users.id','=',$userId);
-        return self::performQuery($this->query);
+        if($onlyFetchActiveRoles && false) {
+            //@TODO: make it work!!
+           // $this->query->where();
+        }
+        return self::performQuery($this->query,'FETCH_ASSOC');
     }
 }

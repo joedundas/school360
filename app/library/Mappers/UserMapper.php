@@ -3,73 +3,30 @@
 class UserMapper
 {
 
-
-    //  List of user types and associated data (e.g. database ids)
-    static protected $userTypes = array(
-        'teacher'=>array('id'=>'teacherId'),
-        'student'=>array('id'=>'studentId'),
-        'staff'=>array('id'=>'staffId'),
-        'parent'=>array('id'=>'parentId')
-    );
-
-    static public function setCommonDemographicsFromQueryToDTO($queryResult,$dto) {
-
-        $dto->setUserId($queryResult->userId);
-        $dto->setFirstName($queryResult->firstName);
-        $dto->setLastName($queryResult->lastName);
-        $dto->setPrimaryEmail($queryResult->email);
-    }
-
-    static public function getUserTypeArrayFromAuthUserModel($userModel) {
-        $userTypes = UserMapper::getUserTypeInformation();
-        $userTypeIds = array();
-        foreach($userTypes as $userType=>$userTypeInfo) {
-            $userTypeIds[$userTypeInfo['id']] = $userModel[$userTypeInfo['id']];
-        }
-        return $userTypeIds;
-    }
-
-    static public function getUserTypeInformation($type = false) {
-        if($type === false) {
-            return self::$userTypes;
-        } elseif (is_array($type))
-        {
-            $returnArray = array();
-            foreach($type as $idx=>$thisType) {
-                if(!isset(self::$userTypes[$thisType])) {
-                    throw new Exception('Request for user type information of unknown type [' . $thisType . '] in UserMapper@getUserTypeInformation');
-                }
-                $returnArray[$thisType] = self::$userTypes[$thisType];
+    public function mapQueryResultsToDTO($mapping_to_userId,$queryResults,$dto) {
+        $dto->setUserId($mapping_to_userId);
+        for($i=0; $i<count($queryResults); $i++) {
+            $queryResult = $queryResults[$i];
+            $userId = $queryResult['userId'];
+            if($userId != $mapping_to_userId) {
+                throw new Exception('Mapping of Query Result to DTO where query result userID does not equal the DTO user ID');
             }
-            return $returnArray;
-        } elseif(is_string($type))
-        {
-            if(!isset(self::$userTypes[$type])) {
-                throw new Exception('Request for user type information of unknown type [' . $type . '] in UserMapper@getUserTypeInformation');
+            if($i==0) {
+                $this->setCommonDemographicsFromQueryToDTO($queryResult,$dto);
             }
-            return self::$userTypes[$type];
+            $dto->addRole($queryResult);
         }
-        throw new Exception('UserMapper@getUserTypeInformation was given an unknown input');
     }
 
-    static public function getUserTypeBasedOnIdArray($idsArray) {
-        $userTypes = self::$userTypes;
-        $returnUserType = null;
-        foreach($userTypes as $userType=>$userTypeInfo) {
-            if(isset($idsArray[$userTypeInfo['id']]) && $idsArray[$userTypeInfo['id']] > 0) {
-                $returnUserType = self::setUserTypeIfNotAlreadySet($returnUserType,$userType);
-            }
-        }
-        if($returnUserType === null) {
-            throw new Exception('Could not determine user type based on ids given in UserMapper@getUserTypeBAsedOnIdArray');
-        }
-        return $returnUserType;
+    public function setCommonDemographicsFromQueryToDTO($queryResult,$dto) {
+        $dto->setNamePrefix($queryResult['namePrefix']);
+        $dto->setFirstName($queryResult['firstName']);
+        $dto->setLastName($queryResult['lastName']);
+        $dto->setNameSuffix($queryResult['nameSuffix']);
+        $dto->setPrimaryEmail($queryResult['email']);
     }
 
-    static public function setUserTypeIfNotAlreadySet($userType,$setToUserType) {
-        if($userType !== null) {
-            throw new Exception('Setting user type to [' . $setToUserType . '] but it has already been set to [' . $userType . ']');
-        }
-        return $setToUserType;
-    }
+
+
+
 }

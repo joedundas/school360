@@ -43,6 +43,9 @@ class AbstractSchoolDTO
     public function setSchoolId($id) {
         $this->info['schoolId'] = $id;
     }
+    public function getSchoolId() {
+        return $this->info['schoolId'];
+    }
     public function setName($name) {
         $this->info['name'] = $name;
     }

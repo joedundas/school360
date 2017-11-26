@@ -4,12 +4,14 @@
 
 class AuthorizationController extends BaseController {
 
-    public function __construct() {
+    protected $authoriztionDTO;
 
+    public function __construct() {
+        $this->authorizationDTO = new AuthorizationDTO();
     }
 
-    public function getAuthorizationForUserIdAtSchoolIdAsUserType($userDTO,$schoolDTO) {
-
+    public function setAuthorizationForUserIdAtSchoolIdAsUserType($userDTO,$schoolDTO) {
+        $this->authorizationDTO->setUserIdAtSchoolIdAsUserType($userDTO,$schoolDTO);
     }
 
 }

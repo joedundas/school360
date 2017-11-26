@@ -18,7 +18,12 @@ class AbstractSchoolRepository extends AbstractRepository
             $query->leftJoin('schools', 'user_school_mapper.schoolId', '=', 'schools.id');
         }
 
-        $selections = array('user_school_mapper.schoolId as schoolId','user_school_mapper.default_school as default_school');
+        $selections = array(
+            'user_school_mapper.schoolId as schoolId',
+            'user_school_mapper.userRoleId as userRoleId',
+            'user_school_mapper.default_school as default_school',
+            'user_school_mapper.canLogIn as canLogIn'
+        );
 
         if($includeSchoolNames) {
             // select school name from schools table
@@ -27,7 +32,7 @@ class AbstractSchoolRepository extends AbstractRepository
         $query->select($selections);
         $query->where('user_school_mapper.userId','=',$userId);
 
-        return self::performQuery($query);
+        return self::performQuery($query,'FETCH_ASSOC');
     }
     static public function getUserIdsForSchool($schoolId) {
         $query = DB::table('user_school_mapper');

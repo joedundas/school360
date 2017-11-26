@@ -16,10 +16,10 @@ class CreateUsersTable extends Migration {
         Schema::dropIfExists('users');
 		Schema::create('users',function($table) {
 			$table->increments('id');
-			$table->unsignedBigInteger('teacherId')->default(0);
-            $table->unsignedBigInteger('staffId')->default(0);
-            $table->unsignedBigInteger('parentId')->default(0);
-            $table->unsignedBigInteger('studentId')->default(0);
+			$table->text('namePrefix')->nullable();
+            $table->text('firstName');
+            $table->text('lastName');
+            $table->text('nameSuffix')->nullable();
 			$table->string('email')->unique();
 			$table->string('password')->nullable();
 			$table->timestamps();
