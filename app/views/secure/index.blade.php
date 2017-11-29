@@ -1,9 +1,15 @@
 <?php
 $goToPage = '';
-$SESSION = array(
-  'user'=> Session::get('user'),
-    'currentSchool'=>Session::get('currentSchool')
+
+$PAGE = new PageController(
+    new userDTO(),
+    new schoolDTO(),
+    new AuthorizationDTO(),
+    new AuthViewDTO()
 );
+$PAGE->loadSessionInfo();
+
+echo $PAGE->getCurrentUserRoleCode() . "]]\n";
 
 ?>
 <!DOCTYPE html>
@@ -15,7 +21,7 @@ $SESSION = array(
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?php echo $SESSION['currentSchool']['name']; ?>  </title>
+    <title><?php echo $PAGE->getCurrentSchoolName(); ?>  </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -44,9 +50,7 @@ $SESSION = array(
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
                     <a href="index.html" class="site_title"><i class="fa fa-paw"></i>
-                        <span>
-                        <?php echo $SESSION['currentSchool']['name']; ?>
-                        </span></a>
+                        <span> <?php echo $PAGE->getCurrentSchoolName(); ?> </span></a>
                 </div>
 
                 <div class="clearfix"></div>

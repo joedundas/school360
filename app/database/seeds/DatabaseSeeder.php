@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder {
 
         $this->call(SeedGradeLevels::class);
         $this->call(SeedCourses::class);
-        $this->call(SeedAuthorizationTypes::class);
+        $this->call(SeedFeatureCodes::class);
+        $this->call(SeedAuthorizationInformation::class);
         $this->call(SeedTestingSchool::class);
 	}
 

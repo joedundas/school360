@@ -18,7 +18,7 @@ class AuthenticationController extends BaseController {
         if(Auth::attempt($userdata)) {
 
             $userDto = new userDTO();
-            $userDto->hydrate(Auth::user()->id);
+            $userDto->hydrate_fromDB(Auth::user()->id);
 
 
             $currentSchoolId = $userDto->getDefaultSchoolId();
@@ -36,13 +36,21 @@ class AuthenticationController extends BaseController {
             $userDto->setCurrentSchoolId($currentSchoolId);
             $userDto->setCurrentUserRoleId($currentUserRoleId);
 
-            $schoolDTO = new schoolDTO();
-            $schoolDTO->hydrate($currentSchoolId);
-//
-//            $authorizationController = new AuthorizationController();
-//            $authorizationController->setAuthorizationForUserIdAtSchoolIdAsUserType($userDto,$schoolDTO);
-//            userController::saveUserToSession($userDto->asArray());
-//            Session::put('currentSchool',$schoolDTO->asArray());
+            $schoolDto = new schoolDTO();
+            $schoolDto->hydrate_fromDB($currentSchoolId);
+
+            $authorizationDto = new AuthorizationDTO();
+            $authorizationDto->hydrate_fromDB($userDto);
+            $stuff = $authorizationDto->asArray();
+
+            $authViewDto = new AuthViewDTO();
+            $authViewDto->hydrate_fromDB();
+
+
+            userController::saveUserToSession($userDto->asArray());
+            Session::put('currentSchool',$schoolDto->asArray());
+            Session::put('authorization',$authorizationDto->asArray());
+            Session::put('authorizationViews',$authViewDto->asArray());
 
         }
         else {

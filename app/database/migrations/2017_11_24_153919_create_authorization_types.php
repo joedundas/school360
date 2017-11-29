@@ -18,13 +18,10 @@ class CreateAuthorizationTypes extends Migration {
 		    $table->char('permissionSubCategory',20)->nullable();
 		    $table->unsignedInteger('entryOrder');
 		    $table->text('requires')->nullable();
+		    $table->text('defaultValue')->nullable();
 		    //$table->text('requiredBy')->nullable();
             $table->char('title',40);
-			$table->char('permissionCode',10)->unique();
-			$table->text('default_staff');
-            $table->text('default_parent');
-            $table->text('default_teacher');
-            $table->text('default_student');
+			$table->char('permissionCode',20)->unique();
             $table->text('description');
 			$table->timestamps();
 		});

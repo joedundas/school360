@@ -7,9 +7,14 @@ class AbstractUserDTO implements UserDTOInterface
         'currentUserRoleId'=>false
     );
     protected $userRepository;
-    protected $userId = null;
+
+
+
     protected $mapper = null;
 
+    protected $currentSchoolId;
+    protected $currentUserRoleId;
+    protected $userId = null;
     protected $email;
 
     protected $name = array(
@@ -35,15 +40,37 @@ class AbstractUserDTO implements UserDTOInterface
     {
 
     }
+    public function getUsersShortName() {
+        return $this->name['first'] . " " . $this->name['last'];
+    }
+    public function getCurrentSchoolName() {
+        $currentSchoolName = 'No School Assoicated with User Session';
+        for($i=0; $i<count($this->schools); $i++) {
+            if($this->schools[$i]['schoolId'] === $this->getCurrentSchoolId()) {
+                $currentSchoolName = $this->schools[$i]['name'];
+                break;
+            }
+        }
+        return $currentSchoolName;
+    }
+    public function getCurrentUserRole() {
+        return $this->roles[$this->getCurrentUserRoleId()]['role'];
+    }
     public function setCurrentSchoolId($schoolId) {
-        $this->loginSession['currentSchoolId'] = $schoolId;
+        $this->currentSchoolId = $schoolId;
+    }
+    public function getCurrentSchoolId() {
+        return $this->currentSchoolId;
     }
     public function setCurrentUserRoleId($userRoleId) {
-        $this->loginSession['currentUserRoleId'] = $userRoleId;
+        $this->currentUserRoleId = $userRoleId;
+    }
+    public function getCurrentUserRoleId() {
+        return $this->currentUserRoleId;
     }
 
 
-    public function hydrate($userId) {
+    public function hydrate_fromDB($userId) {
         $queryResults = $this->userRepository->getSingleUserByUserId($userId);
 
         $this->mapper->mapQueryResultsToDTO(
@@ -57,6 +84,19 @@ class AbstractUserDTO implements UserDTOInterface
         foreach($schools as $idx=>$school) {
             $this->addSchool($school);
         }
+
+    }
+
+
+    public function hydrate_fromArray($array) {
+        $this->setCurrentSchoolId($array['currentSchoolId']);
+        $this->setCurrentUserRoleId($array['currentUserRoleId']);
+        $this->setUserId($array['userId']);
+        $this->setPrimaryEmail($array['email']);
+        $this->roles = $array['roles'];
+        $this->schools = $array['schools'];
+        $this->schoolRoleIds = $array['rolesAtSchools'];
+        $this->name = $array['name'];
     }
     public function getDefaultSchoolId($restrictToCanLogin = true) {
         // Returns the school that is marked as default.  If none are marked as
@@ -66,7 +106,7 @@ class AbstractUserDTO implements UserDTOInterface
         for($i=0; $i<count($this->schools); $i++) {
 
             // Continue if the current school is marked as can't login and the restriciton is set to true
-            if($restrictToCanLogin && $this->schools[$i]['canLogin'] === 'N') {
+            if($restrictToCanLogin && $this->schools[$i]['canLogIn'] === 'N') {
                 continue;
             }
 
@@ -128,6 +168,9 @@ class AbstractUserDTO implements UserDTOInterface
     public function setPrimaryEmail($email) {
         $this->email = $email;
     }
+    public function getPrimaryEmail() {
+        return $this->email;
+    }
 
     public function addSchool($school) {
         if(!isset($school['schoolId'])) {
@@ -139,7 +182,6 @@ class AbstractUserDTO implements UserDTOInterface
             'name'=>$school['schoolName'],
             'default'=>$school['default_school'],
             'canLogIn'=>$school['canLogIn']
-
         );
 
     }
@@ -160,7 +202,7 @@ class AbstractUserDTO implements UserDTOInterface
             'role'=>$args['userRole'],
             'beginDate'=>$args['roleBeginDate'] != '' && $args['roleBeginDate'] != 'NULL' ? new \Carbon\Carbon($args['roleBeginDate']) : '',
             'endDate'=>$args['roleEndDate'] != '' && $args['roleEndDate'] != 'NULL' ? new \Carbon\Carbon($args['roleEndDate']) : '',
-            'canLogin'=>isset($args['userRoleCanLogin']) ? $args['userRoleCanLogin'] : 'N',
+            'canLogIn'=>isset($args['userRoleCanLogin']) ? $args['userRoleCanLogin'] : 'N',
             'defaultAtSchool'=>isset($args['defaultRoleAtSchool']) ? $args['defaultRoleAtSchool'] : 'N'
 
         );
@@ -174,8 +216,11 @@ class AbstractUserDTO implements UserDTOInterface
     }
     public function asArray() {
         $arr = array(
-            'loginSession'=>$this->getLoginSessionArray(),
-            'meta'=>$this->getUserInformationArray(),
+            'currentSchoolId'=>$this->getCurrentSchoolId(),
+            'currentUserRoleId'=>$this->getCurrentUserRoleId(),
+            'userId'=>$this->getUserId(),
+            'email'=>$this->getPrimaryemail(),
+
             'name'=>$this->getNameArray(),
             'roles'=>$this->getRolesArray(),
             'schools'=>$this->getSchoolsArray(),
@@ -186,16 +231,8 @@ class AbstractUserDTO implements UserDTOInterface
     public function getSchoolsArray() {
         return $this->schools;
     }
-    public function getLoginSessionArray() {
-        return $this->loginSession;
-    }
-    public function getUserInformationArray() {
 
-        return array(
-            'userId'=>$this->userId,
-            'userEmail'=>$this->email,
-        );
-    }
+
     public function getNameArray() {
         return $this->name;
     }

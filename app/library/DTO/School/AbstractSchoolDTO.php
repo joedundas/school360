@@ -11,6 +11,16 @@ class AbstractSchoolDTO
 
     protected $schoolRepository;
     protected $mapper = null;
+
+    protected $schoolId;
+    protected $schoolName;
+    protected $address = array(
+        'street'=>'',
+        'street2'=>'',
+        'city'=>'',
+        'state'=>'',
+        'zip'=>''
+    );
     protected $info = array(
         'schoolId'=>'',
         'name'=>'',
@@ -25,29 +35,50 @@ class AbstractSchoolDTO
 
     public function __construct()
     {
-
         $this->schoolRepository = new schoolRepository();
     }
 
     public function asArray() {
-        $arr = $this->info;
+        $arr = array(
+            'schoolId'=>$this->getSchoolId(),
+            'schoolName'=>$this->getName(),
+            'address'=>$this->getPrimaryAddress()
+        );
         return $this->addSchoolTypeSpecificToArray($arr);
     }
-    public function hydrate($schoolId) {
+    public function hydrate_fromDB($schoolId) {
         $queryResult = $this->schoolRepository->getSingleSchoolById($schoolId);
         $this->mapper->mapQueryResultToDTO(
             $queryResult[0],
             $this
         );
     }
+    public function hydrate_fromArray($array) {
+        $this->setSchoolId($array['schoolId']);
+        $this->setName($array['schoolName']);
+        list($street,$street2,$city,$state,$zip) = $array['address'];
+        $this->setPrimaryAddress($street,$street2,$city,$state,$zip);
+    }
     public function setSchoolId($id) {
-        $this->info['schoolId'] = $id;
+        $this->schoolId = $id;
     }
     public function getSchoolId() {
-        return $this->info['schoolId'];
+        return $this->schoolId;
     }
     public function setName($name) {
-        $this->info['name'] = $name;
+        $this->schoolName = $name;
+    }
+    public function getName() {
+        return $this->schoolName;
+    }
+    public function getPrimaryAddress() {
+        return array(
+            $this->address['street'],
+            $this->address['street2'],
+            $this->address['city'],
+            $this->address['state'],
+            $this->address['zip']
+        );
     }
     public function setPrimaryAddress($street = '',$street2 = '',$city='',$state='',$zip='') {
          $this->setPrimaryStreetAddress($street,$street2);
@@ -56,17 +87,17 @@ class AbstractSchoolDTO
          $this->setPrimaryZipCodeAddress($zip);
     }
     public function setPrimaryStreetAddress($street,$street2='') {
-        $this->info['primary-address']['street'] = $street;
-        $this->info['primary-address']['street2'] = $street2;
+        $this->address['street'] = $street;
+        $this->address['street2'] = $street2;
     }
     public function setPrimaryCityAddress($city) {
-        $this->info['primary-address']['city'] = $city;
+        $this->address['city'] = $city;
     }
     public function setPrimaryStateAddress($state) {
-        $this->info['primary-address']['state'] = $state;
+        $this->address['state'] = $state;
     }
     public function setPrimaryZipCodeAddress($zip) {
-        $this->info['primary-address']['zip'] = $zip;
+        $this->address['zip'] = $zip;
     }
 
 }

@@ -11,10 +11,18 @@ class SeedTestingSchool extends Seeder
         $schoolId_1 = DB::table('schools')->insertGetId(
             array('name'=>'Testing School','address'=>'123 Banana Lane','city'=>'Phoenix','state'=>'AZ','zip'=>'850234567')
         );
+
+
+
         $schoolId_2 = DB::table('schools')->insertGetId(
             array('name'=>'Paradise Valley Christian Prep','address'=>'567 Fog Lane','city'=>'Phoenix','state'=>'AZ','zip'=>'850238967')
         );
 
+        DB::table('feature_flips')->insert(
+            array(
+                array('schoolId'=>$schoolId_2,'code'=>'schedule','subcode'=>'menu','status'=>'on')
+            )
+        );
 
         list($teacherId_1,$teacherId_2) = $this->seed_teacher($schoolId_1);
         $parentId = $this->seed_parent($schoolId_1);
@@ -126,6 +134,11 @@ class SeedTestingSchool extends Seeder
         DB::table('user_school_mapper')->insert(
             array('userId'=>$userId,'userRoleId'=>$userRoleId,'schoolId'=>$schoolId_2,'default_school'=>'Y')
         );
+        DB::table('user_authorizations')->insert(
+            array('userRoleId'=>$userRoleId,'schoolId'=>$schoolId_2,'permissionCode'=>'add_staff','permissionValue'=>'Y')
+        );
+
+
     }
 }
 

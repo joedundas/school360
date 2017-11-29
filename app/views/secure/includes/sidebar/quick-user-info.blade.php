@@ -5,7 +5,7 @@
     </div>
     <div class="profile_info">
         <span>Welcome,</span>
-        <h2><?php echo $SESSION['user']['name']['first'] . ' ' . $SESSION['user']['name']['last']; ?></h2>
+        <h2> {{ $PAGE->getUsersName('%F %L') }} </h2>
     </div>
 </div>
 <!-- /menu profile quick info -->

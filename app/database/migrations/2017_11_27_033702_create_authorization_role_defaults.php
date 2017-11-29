@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserAuthorizations extends Migration {
+class CreateAuthorizationRoleDefaults extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,14 +12,14 @@ class CreateUserAuthorizations extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('user_authorizations', function(Blueprint $table)
+		Schema::create('authorization_role_defaults', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->unsignedBigInteger('userRoleId');
-			$table->unsignedBigInteger('schoolId');
-			$table->char('permissionCode','20');
-			$table->text('permissionValue');
+			$table->char('role',20);
+			$table->char('permissionCode',20);
+			$table->text('defaultValue')->nullable();
 			$table->timestamps();
+
 		});
 	}
 
@@ -30,7 +30,7 @@ class CreateUserAuthorizations extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('user_authorizations');
+		Schema::drop('authorization_role_defaults');
 	}
 
 }
