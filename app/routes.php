@@ -39,7 +39,8 @@ Route::match(array('GET','POST'),'dashboard',array('before'=>'auth',function() {
 //
 Route::post('login','AuthenticationController@login');
 Route::match(array('GET','POST'),'doLogout','AuthenticationController@doLogout');
-//
+Route::match(array('GET','POST'),'switchRole',array('before'=>'auth', 'uses'=>'AuthenticationController@switchToRole'));
+
 //// AJAX Responses
 //Route::get('utilities/stateList/{searchTerm?}','AjaxController@getListOfStates');
 

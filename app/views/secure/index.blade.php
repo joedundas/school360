@@ -5,11 +5,15 @@ $PAGE = new PageController(
     new userDTO(),
     new schoolDTO(),
     new AuthorizationDTO(),
-    new AuthViewDTO()
+    new AuthViewDTO(),
+    new FeatureFlipDTO()
 );
 $PAGE->loadSessionInfo();
 
-echo $PAGE->getCurrentUserRoleCode() . "]]\n";
+//if($PAGE->featureFlipEnabled(array('social'))) { echo "IT IS READY"; }
+//else { echo "NO SHOW IT"; }
+
+
 
 ?>
 <!DOCTYPE html>
@@ -35,14 +39,35 @@ echo $PAGE->getCurrentUserRoleCode() . "]]\n";
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
 
-    <script>
+    @include('secure.includes.js')
 
+    <script>
+function switchToRole() {
+    var params = {
+        'userRoleId':13
+    };
+    ajaxFeed(
+        {
+            'url': 'switchRole',
+            'loader': 'body',
+            'stopSubsequentAttemptsUntilComplete': true,
+            'data': params,
+            'submitType': 'POST',
+            'successCallback': receiveResults,
+            //'passthru':passBackToReceive
+        }
+    );
+    function receiveResults(dta) {
+        alert(dta);
+        location.reload();
+    }
+}
     </script>
 </head>
 
 <body class="nav-md">
 
-
+<span onclick="switchToRole()">Switch To Role 13 from 14 [<?php echo $PAGE->getCurrentUserRoleId() ?>]</span>
 
 <div class="container body">
     <div class="main_container">

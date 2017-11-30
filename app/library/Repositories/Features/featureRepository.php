@@ -6,7 +6,7 @@
  * Date: 11/23/17
  * Time: 10:16 AM
  */
-class featureRepository extends AbstractFeatureRepository
+class featureRepository extends AbstractFeaturesRepository
 {
 
     public function __construct() {

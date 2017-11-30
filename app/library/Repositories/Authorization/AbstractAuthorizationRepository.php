@@ -22,6 +22,8 @@ class AbstractAuthorizationRepository extends AbstractRepository
         return self::performQuery($this->query,'FETCH_ASSOC');
     }
     public function getUserSpecificAuthorizations($userRoleId,$schoolId) {
+       // echo "[[[" . $userRoleId . "]]][[[" . $schoolId . "]]]]\n";
+
         if(!is_int($userRoleId) || !is_int($schoolId)) {
             throw new Exception('Invalid values given for authorization repository');
         }

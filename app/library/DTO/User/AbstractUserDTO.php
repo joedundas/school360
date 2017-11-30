@@ -208,6 +208,12 @@ class AbstractUserDTO implements UserDTOInterface
         );
 
     }
+    public function getRoleByUserRoleId($userRoleId) {
+        if(array_key_exists($userRoleId,$this->roles)) {
+            return $this->roles[$userRoleId];
+        }
+        return false;
+    }
     public function addUserRoleIdToSchoolId($userRoleId,$schoolId) {
         if(!array_key_exists($schoolId,$this->schoolRoleIds)) {
             $this->schoolRoleIds[$schoolId] = array();

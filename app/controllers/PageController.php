@@ -8,13 +8,17 @@ class PageController extends BaseController {
     protected $authDto;
     protected $schoolDto;
     protected $authViewDto;
+    protected $featureFlipDto;
 
-    public function __construct($userDto,$schoolDto,$authDto,$authViewDto) {
+    public function __construct($userDto,$schoolDto,$authDto,$authViewDto,$featureFlipDto) {
         $this->setUserDto($userDto);
         $this->setSchoolDto($schoolDto);
         $this->setAuthDto($authDto);
         $this->setAuthViewDto($authViewDto);
+        $this->setFeatureFlipDto($featureFlipDto);
     }
+
+
 
     public function loadSessionInfo() {
         $this->userDto->hydrate_fromArray(Session::get('user'));
@@ -24,8 +28,18 @@ class PageController extends BaseController {
             throw new Exception('Security Protection: Authorization not set in index view');
         }
         $this->authViewDto->hydrate_fromArray(Session::get('authorizationViews'));
+        $this->featureFlipDto->hydrate_fromArray(Session::get('featureFlips'));
     }
 
+    public function featureFlipEnabled($feature_code) {
+        if(is_array($feature_code)) { $feature_code = implode(':',$feature_code); }
+        return $this->featureFlipDto->isFeatureEnabledForSchool($feature_code,$this->getSchoolDto()) ? true : false;
+
+    }
+
+    public function getCurrentUserRoleId() {
+        return $this->userDto->getCurrentUserRoleId();
+    }
     public function getCurrentUserRoleCode() {
         return $this->userDto->getCurrentUserRole();
     }
@@ -50,11 +64,17 @@ class PageController extends BaseController {
     public function getAuthViewDto() {
         return $this->authViewDto;
     }
+    public function getFeatureFlipDto() {
+        return $this->featureFlipDto;
+    }
     public function canUserAccess($itemCode) {
         return $this->authViewDto->canUserAccess($itemCode,$this->authDto);
     }
     public function setUserDto($dto) {
         $this->userDto = $dto;
+    }
+    public function setFeatureFlipDto($dto) {
+        $this->featureFlipDto = $dto;
     }
     public function setSchoolDto($dto) {
         $this->schoolDto = $dto;
