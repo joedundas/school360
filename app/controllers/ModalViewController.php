@@ -22,7 +22,6 @@ class ModalViewController extends BaseController {
             array(
                 'html'=> $html->render(),
                 'width'=>$vw->width,
-                'height'=>$vw->height,
                 'title'=>$vw->title
             )
         );

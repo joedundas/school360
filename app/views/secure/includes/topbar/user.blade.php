@@ -12,6 +12,14 @@
             </a>
         </li>
         <li><a href="javascript">Help</a></li>
+        @if($PAGE->getNumberOfRoles() > 1)
+            <li>
+                <a onclick="controller.modals.create({'view':'modal/roles-list'})">
+                    <span class="badge bg-red pull-right">{{ $PAGE->getNumberOfRoles() }}</span>
+                    <span>Switch Account/Role</span>
+                </a>
+            </li>
+            @endif
         <li><a href="doLogout"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
     </ul>
 </li>

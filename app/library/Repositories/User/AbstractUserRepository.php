@@ -37,12 +37,32 @@ abstract class AbstractUserRepository extends AbstractRepository implements User
         $this->query = DB::table('users');
         $this->query->leftJoin('user_roles','users.id','=','user_roles.userId');
 
+
         $this->query->select($selections);
         $this->query->where('users.id','=',$userId);
         if($onlyFetchActiveRoles && false) {
             //@TODO: make it work!!
            // $this->query->where();
         }
+        return self::performQuery($this->query,'FETCH_ASSOC');
+    }
+
+    public function getUsersDemographics($userId) {
+        $this->query = DB::table('demographics');
+    }
+    public function getUsersContactInformation($userId) {
+        $this->query = DB::table('contact_info');
+        $this->query->select(
+            array(
+            'contact_info.userId as userId',
+            'contact_info.userRoleId as userRoleId',
+            'contact_info.isDefault as isDefault',
+            'contact_info.contactType as type',
+            'contact_info.entryType as entryType',
+            'contact_info.contactInfo as info'
+            )
+        );
+        $this->query->where('contact_info.userId','=',$userId);
         return self::performQuery($this->query,'FETCH_ASSOC');
     }
 }

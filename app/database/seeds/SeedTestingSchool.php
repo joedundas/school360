@@ -4,6 +4,8 @@ class SeedTestingSchool extends Seeder
 {
     public function run() {
         DB::table('schools')->delete();
+        DB::table('contact_info')->delete();
+        DB::table('demographics')->delete();
         DB::table('users')->delete();
         DB::table('user_school_mapper')->delete();
         DB::table('user_relationship_map')->delete();
@@ -125,6 +127,36 @@ class SeedTestingSchool extends Seeder
         );
         DB::table('user_school_mapper')->insert(
                 array('userId'=>$userId,'userRoleId'=>$userRoleId,'schoolId'=>$schoolId_1,'default_school'=>'N')
+        );
+
+        DB::table('contact_info')->insert(
+            array(
+                array(
+                    'userId'=>$userId,
+                    'userRoleId'=>$userRoleId,
+                    'isDefault'=>'Y',
+                    'contactType'=>'email',
+                    'entryType'=>'Home',
+                    'contactInfo'=>base64_encode(json_encode(array('email'=>'testextra@gmail.com')))
+                ),
+                array(
+                    'userId'=>$userId,
+                    'userRoleId'=>$userRoleId,
+                    'isDefault'=>'Y',
+                    'contactType'=>'address',
+                    'entryType'=>'Home',
+                    'contactInfo'=>base64_encode(json_encode(array('address1'=>'123 Boingo','address2'=>'','city'=>'Phoenix','state'=>'AZ','zip'=>'85023')))
+                ),
+            )
+        );
+
+        DB::table('demographics')->insert(
+            array(
+                'userId'=>$userId,
+                'userRoleId'=>$userRoleId,
+                'birthdate'=>'',
+                'about'=>'This is a little blurb about me.  I hope you like it.  It can be changed in your profile.'
+            )
         );
 
         // Role 2 at School 2

@@ -19,6 +19,8 @@ Route::match(array('GET','POST'),'dashboard',array('before'=>'auth',function() {
     return View::make($bladeFile);
 }));
 
+Route::match(array('GET','POST'),'modal/{view}','ModalViewController@getModalView');
+
 //
 //Route::match(array('GET','POST'),'modal/{view}','ModalViewController@getModalView');
 //

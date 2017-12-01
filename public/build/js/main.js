@@ -96,7 +96,7 @@ function init_ToolbarBootstrapBindings() {
 
 
 function navigateToPage(pageRoute) {
-    alert(pageRoute);
+
     $('#pageMainContent').load(pageRoute, function() {
         $(window).trigger( 'load' );
     });

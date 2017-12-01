@@ -37,6 +37,15 @@ class PageController extends BaseController {
 
     }
 
+    public function getUsersSchools() {
+        return $this->userDto->getSchoolsArray();
+    }
+    public function getUsersRoles() {
+        return $this->userDto->getRolesArray();
+    }
+    public function getNumberOfRoles() {
+        return count($this->userDto->getRolesArray());
+    }
     public function getCurrentUserRoleId() {
         return $this->userDto->getCurrentUserRoleId();
     }

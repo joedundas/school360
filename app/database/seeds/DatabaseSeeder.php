@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder {
         $this->call(SeedFeatureCodes::class);
         $this->call(SeedAuthorizationInformation::class);
         $this->call(SeedTestingSchool::class);
+        $this->call(SeedModalViews::class);
 	}
 
 }

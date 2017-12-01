@@ -21,6 +21,16 @@ abstract class Formatter
     static $SpecialCodeIndicator = '%';
     static $SpecialCodeIndicatorTempFormat = '%#%#%#';
 
+    static public function roleType($roleType) {
+       switch($roleType) {
+           case 'staff': return 'Faculty/Staff'; break;
+           case 'teacher': return 'Faculty/Teacher'; break;
+           case 'parent': return 'Parent/Guardian'; break;
+           case 'student': return 'Student'; break;
+           case 'coach' : return 'Athletics/Coach'; break;
+           default: return 'Unknown'; break;
+       }
+    }
 
     static public function personName($nameArray,$formatThisString) {
 

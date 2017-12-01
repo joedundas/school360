@@ -27,6 +27,22 @@ class UserMapper
     }
 
 
+    static public function getUserRoleInformation($userRoleId,PageController $PAGE) {
 
+        $roles = $PAGE->getUsersRoles();
+        $schools = $PAGE->getUsersSchools();
+        $role = $roles[$userRoleId];
+
+        $roleType = 'staff';
+
+        return array(
+            'userRoleId'=>$userRoleId,
+            'roleType'=>$roleType,
+            'roleTitle'=>Formatter::roleType($roleType),
+            'name'=>$PAGE->getUsersName('%P %F %m %D %S'),
+            'schoolId'=>1,
+            'schoolName'=>'This is the schools name'
+        );
+    }
 
 }

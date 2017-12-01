@@ -42,32 +42,17 @@ $PAGE->loadSessionInfo();
     @include('secure.includes.js')
 
     <script>
-function switchToRole() {
-    var params = {
-        'userRoleId':13
-    };
-    ajaxFeed(
-        {
-            'url': 'switchRole',
-            'loader': 'body',
-            'stopSubsequentAttemptsUntilComplete': true,
-            'data': params,
-            'submitType': 'POST',
-            'successCallback': receiveResults,
-            //'passthru':passBackToReceive
-        }
-    );
-    function receiveResults(dta) {
-        alert(dta);
-        location.reload();
-    }
-}
+        var controller = new controller(
+            new pageController(),
+            new modalController()
+        );
+
     </script>
 </head>
 
 <body class="nav-md">
 
-<span onclick="switchToRole()">Switch To Role 13 from 14 [<?php echo $PAGE->getCurrentUserRoleId() ?>]</span>
+
 
 <div class="container body">
     <div class="main_container">
