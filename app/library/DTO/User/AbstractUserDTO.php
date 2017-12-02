@@ -88,23 +88,51 @@ class AbstractUserDTO implements UserDTOInterface
 
         $queryResults = $this->userRepository->getUsersContactInformation($userId);
 
+
         foreach($queryResults as $idx=>$contactInfo) {
             $this->addContactInfoItem($contactInfo);
         }
-    }
 
+        $queryResults = $this->userRepository->getUserDemographics($userId);
+        foreach($queryResults as $idx=>$demographic) {
+            $this->addDemographicItem($demographic);
+        }
+    }
+    public function addDemographicItem($demographic) {
+
+        $userRoleId = $demographic['userRoleId'];
+        foreach($demographic as $key=>$value) {
+            if(preg_match('/^dem\-(.*)$/',$key)) {
+                $key = str_replace('dem-','',$key);
+                $this->addToDemographics($userRoleId,$key,$value);
+            }
+        }
+
+    }
     public function addContactInfoItem($contactInfo) {
         $contactInfo['info'] = json_decode(base64_decode($contactInfo['info']),true);
         $type = $contactInfo['type'];
         if($type == 'email') {
-            $this->addEmail($contactInfo['userRoleId'],$contactInfo['info']);
+            $this->addEmail($contactInfo['userRoleId'],$contactInfo['info'],$contactInfo['isDefault']);
         }
         elseif($type == 'phone') {
-            $this->addPhone($contactInfo['userRoleId'],$contactInfo['info']);
+            $this->addPhone($contactInfo['userRoleId'],$contactInfo['info'],$contactInfo['isDefault']);
         }
         elseif($type == 'address') {
-            $this->addAddress($contactInfo['userRoleId'],$contactInfo['info']);
+            $this->addAddress($contactInfo['userRoleId'],$contactInfo['info'],$contactInfo['isDefault']);
         }
+    }
+    public function getDemographicsItemForUserRole($userRoleId,$item) {
+        $demographics = $this->getDemographicsArray();
+
+        if(!array_key_exists($userRoleId,$demographics)) {
+            return $this->getDemographicsItemForUser($item);
+        }
+        return isset($demographics[$userRoleId][$item]) ? $demographics[$userRoleId][$item] : '';
+    }
+    public function getDemographicsItemForUser($item) {
+        $demographics = $this->getDemographicsArray();
+        return isset($demographics[0][$item]) ? $demographics[0][$item] : '';
     }
     public function addToDemographics($userRoleId,$key,$value) {
         if(!array_key_exists($userRoleId,$this->demographics)) {
@@ -112,23 +140,23 @@ class AbstractUserDTO implements UserDTOInterface
         }
         $this->demographics[$userRoleId][$key] = $value;
     }
-    public function addAddress($userRoleId,$address) {
+    public function addAddress($userRoleId,$address,$isDefault = 'N') {
         if(!array_key_exists($userRoleId,$this->addresses)) {
             $this->addresses[$userRoleId] = array();
         }
-        $this->addresses[$userRoleId][] = $address;
+        $this->addresses[$userRoleId][] = array('default'=>$isDefault,'address'=>$address);
     }
-    public function addEmail($userRoleId,$email) {
+    public function addEmail($userRoleId,$email,$isDefault = 'N') {
         if(!array_key_exists($userRoleId,$this->emails)) {
             $this->emails[$userRoleId] = array();
         }
-        $this->emails[$userRoleId][] = $email;
+        $this->emails[$userRoleId][] = array('default'=>$isDefault,'email'=>$email['email']);
     }
-    public function addPhone($userRoleId,$phone) {
+    public function addPhone($userRoleId,$phone,$isDefault = 'N') {
         if(!array_key_exists($userRoleId,$this->phones)) {
             $this->phones[$userRoleId] = array();
         }
-        $this->phones[$userRoleId][] = $phone;
+        $this->phones[$userRoleId][] = array('default'=>$isDefault,'phone'=>$phone);
     }
     public function getRoleByUserRoleId($userRoleId) {
         if(array_key_exists($userRoleId,$this->roles)) {
@@ -137,7 +165,27 @@ class AbstractUserDTO implements UserDTOInterface
         return false;
     }
 
+    public function getDefaultPhoneForUserRole($userRoleId) {
 
+    }
+    public function getDefaultEmailForUserRole($userRoleId) {
+        $emails = $this->getEmailsArray();
+        if(!array_key_exists($userRoleId,$emails)) {
+            return $this->getPrimaryEmail();
+        }
+
+        if(count($emails[$userRoleId]) == 0) {
+            return $this->getPrimaryEmail();
+        }
+
+        for($i=0; $i<count($emails[$userRoleId]); $i++) {
+            if($emails[$userRoleId][$i]['default'] === 'Y') {
+               return $emails[$userRoleId][$i]['email'];
+            }
+        }
+        return $this->getPrimaryEmail();
+
+    }
 
     public function hydrate_fromArray($array) {
         $this->setCurrentSchoolId($array['currentSchoolId']);

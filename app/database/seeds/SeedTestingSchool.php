@@ -154,8 +154,8 @@ class SeedTestingSchool extends Seeder
             array(
                 'userId'=>$userId,
                 'userRoleId'=>$userRoleId,
-                'birthdate'=>'',
-                'about'=>'This is a little blurb about me.  I hope you like it.  It can be changed in your profile.'
+                'dem-birthdate'=>'',
+                'dem-about'=>'This is a little blurb about me.  I hope you like it.  It can be changed in your profile.'
             )
         );
 

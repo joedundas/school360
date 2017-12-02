@@ -47,8 +47,15 @@ abstract class AbstractUserRepository extends AbstractRepository implements User
         return self::performQuery($this->query,'FETCH_ASSOC');
     }
 
-    public function getUsersDemographics($userId) {
+    public function getUserDemographics($userId) {
         $this->query = DB::table('demographics');
+        $this->query->select(
+            array(
+                'demographics.*'
+            )
+        );
+        $this->query->where('demographics.userId','=',$userId);
+        return self::performQuery($this->query,'FETCH_ASSOC');
     }
     public function getUsersContactInformation($userId) {
         $this->query = DB::table('contact_info');
