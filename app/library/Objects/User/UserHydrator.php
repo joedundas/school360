@@ -30,9 +30,10 @@ class UserHydrator
     }
     static public function hydrateUserSchoolsFromDB($dto) {
         $schools = schoolRepository::getSchoolIdsForUser($dto->getUserId());
-        foreach($schools as $idx=>$school) {
-            $dto->addSchool($school);
-        }
+       // var_dump($schools); exit;
+//        foreach($schools as $idx=>$school) {
+//            $dto->addSchool($school);
+//        }
     }
     static public function hydrateContactInfoResultsIntoUserDto(UserDto $dto,$results) {
         foreach($results as $idx=>$result) {
@@ -41,7 +42,7 @@ class UserHydrator
                 UserHydrator::putContactResultIntoContactInfo($dto->contactInfo,$result);
             }
             if($result['roleId'] !== 0) {
-                $roleDto = $dto->roles->getRoleByRoleId($result['roleId']);
+                $roleDto = $dto->roles->getById($result['roleId']);
                 UserHydrator::putContactResultIntoContactInfo($roleDto->contactInfo,$result);
             }
         }

@@ -27,7 +27,7 @@ class UserDao
     public function name() {
         // returns the roles name value object if it has been set.  If not set, then it
         //   returns the users name value object.
-        $role = $this->roles()->getRoleByRoleId($this->getCurrentRoleId());
+        $role = $this->roles()->getById($this->getCurrentRoleId());
         return $role->getName()->hasBeenSet() ? $role->getName() : $this->dto->getName();
     }
     public function roles() {
@@ -40,7 +40,7 @@ class UserDao
         }
         $this->dto->setUserId($userId);
 
-       // UserHydrator::hydrateUserSchoolsFromDB($this->dto);
+        UserHydrator::hydrateUserSchoolsFromDB($this->dto);
 
         UserHydrator::hydrateUserAndRolesromDB(
             $this->dto,

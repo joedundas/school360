@@ -6,7 +6,7 @@
  * Date: 12/6/17
  * Time: 10:35 AM
  */
-class RoleDto
+class RoleDto implements DtoInterface
 {
     protected $roleId = false;
     protected $schoolId = false;
@@ -72,6 +72,9 @@ class RoleDto
         $this->roleId = $roleId;
     }
     public function getRoleId()  {
+        return $this->roleId;
+    }
+    public function getId() {
         return $this->roleId;
     }
 }

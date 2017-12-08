@@ -6,31 +6,16 @@
  * Date: 12/6/17
  * Time: 1:45 PM
  */
-class RoleCollection
+class RoleCollection extends AbstractDtoCollection
 {
-
-    protected $roles = array();
-
-
 
     public function __construct()
     {
     }
 
-    public function count() {
-        return count($this->roles);
-    }
-
-    public function add(RoleDto $role) {
-        $this->roles[$role->getRoleId()] = $role;
-    }
-    public function getRoleByRoleId($roleId) {
-        return $this->roles[$roleId];
-    }
-
     public function getDefaultRoleDto() {
         $defaultRoleDto = false;
-        foreach($this->roles as $userRoleId=>$role) {
+        foreach($this->items as $userRoleId=>$role) {
             if($role->getIsDefault() === 'Y' && $role->getCanLogIn() === 'Y') {
                 return $role;
             }
