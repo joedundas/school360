@@ -1,6 +1,7 @@
 <li class="">
     <a href="javascript" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-        <img src="images/img.jpg" alt=""> {{ $PAGE->getUsersName('%F %L') }}
+        <img src="images/img.jpg" alt="">
+        {{$PAGE->user->name()->format('%F %L')}}
         <span class=" fa fa-angle-down"></span>
     </a>
     <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -12,10 +13,10 @@
             </a>
         </li>
         <li><a href="javascript">Help</a></li>
-        @if($PAGE->getNumberOfRoles() > 1)
+        @if($PAGE->user->roles()->count() > 1)
             <li>
                 <a onclick="controller.modals.create({'view':'modal/roles-list'})">
-                    <span class="badge bg-red pull-right">{{ $PAGE->getNumberOfRoles() }}</span>
+                    <span class="badge bg-red pull-right">{{ $PAGE->user->roles()->count() }}</span>
                     <span>Switch Account/Role</span>
                 </a>
             </li>

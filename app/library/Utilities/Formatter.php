@@ -4,14 +4,44 @@ abstract class Formatter
 {
 
     static $PersonNameCodes = array(
-        'P'=>'prefix', // name prefix
-        'F'=>'first', // first name
-        'f'=>'first', // first initial
-        'M'=>'middle', // middle name
-        'm'=>'middle',  // middle initial
-        'L'=>'last', // last name
-        'l'=>'last', // last initial
-        'S'=>'suffix', // name suffix
+        'meta'=>array(
+            'lowerCaseIndicatesFirstLetterOnly'=>true
+        ),
+        'codes'=>array(
+            'P'=>'prefix', // name prefix
+            'F'=>'first', // first name
+            'f'=>'first', // first initial
+            'M'=>'middle', // middle name
+            'm'=>'middle',  // middle initial
+            'L'=>'last', // last name
+            'l'=>'last', // last initial
+            'S'=>'suffix', // name suffix
+        )
+    );
+
+    static $PhoneNumberCodes = array(
+        'meta'=>array(
+            'lowerCaseIndicatesFirstLetterOnly'=>false
+        ),
+        'codes'=>array(
+            'T'=>'type',
+            'A'=>'areaCode',
+            'P'=>'prefix',
+            'S'=>'suffix'
+        )
+    );
+    static $AddressCodes = array(
+        'meta'=>array(
+            'lowerCaseIndicatesFirstLetterOnly'=>false
+        ),
+        'codes'=>array(
+            'T'=>'type',
+            'S'=>'street',
+            'S2'=>'street2',
+            'C'=>'city',
+            'S'=>'state',
+            'Z'=>'zip'
+        )
     );
 
     // SpecialCodeIndicator is used in formatting input to indicate the next character(s) will
@@ -32,44 +62,59 @@ abstract class Formatter
        }
     }
 
+    static public function address($addressArray,$formatThisString) {
+        return self::makeReplacement($formatThisString,$addressArray,self::$AddressCodes);
+    }
+    static public function phoneNumber($phoneArray,$formatThisString) {
+        return self::makeReplacement($formatThisString,$phoneArray,self::$PhoneNumberCodes);
+    }
+
     static public function personName($nameArray,$formatThisString) {
 
+        return self::makeReplacement($formatThisString,$nameArray,self::$PersonNameCodes);
 
-        // Temporarily change
-        $formatThisString = preg_replace('/' . self::$SpecialCodeIndicator . '/',self::$SpecialCodeIndicatorTempFormat,$formatThisString);
+    }
+
+    static private function makeReplacement($formatThisString,$targetArray,$usingArray) {
+        $formatThisString = self::setTemporaryPlaceHolder($formatThisString);
+
         $replaceArray = array();
         $replaceWithArray = array();
+        foreach($usingArray['codes'] as $replaceThis=>$withThis) {
 
-        foreach(self::$PersonNameCodes as $replaceThis=>$withThis) {
-
-            if(!array_key_exists($withThis,$nameArray) && $nameArray[$withThis] !== 'NULL') {
+            if (!array_key_exists($withThis, $targetArray) && $targetArray[$withThis] !== 'NULL') {
                 continue;
             }
-
             $replaceArray[] = '/' . self::$SpecialCodeIndicatorTempFormat . $replaceThis . '/';
-
-            $nameComponent = trim($nameArray[$withThis]);
-            if($nameComponent === '') {
+            $component = trim($targetArray[$withThis]);
+            if($component === '') {
                 $replaceWithArray[] = '';
             }
-            else if(ctype_lower($replaceThis)) {
+            else if(ctype_lower($replaceThis) && $usingArray['meta']['lowerCaseIndicatesFirstLetterOnly']) {
                 // just get first letter
-                $replaceWithArray[] = $nameComponent[0]; //strtoupper(trim($nameArray[$withThis][0]));
-
+                $replaceWithArray[] = $component[0];
             }
             else {
-                $replaceWithArray[] = trim($nameComponent);
+                $replaceWithArray[] = trim($component);
             }
         }
 
-        $formatThisString = preg_replace(
+        $formatThisString =  self::replace($replaceArray,$replaceWithArray,$formatThisString);
+        return self::unsetTemporaryPlaceHolder($formatThisString);
+    }
+
+    static private function replace($replaceArray,$replaceWithArray,$formatThisString) {
+        return preg_replace(
             $replaceArray,
             $replaceWithArray,
             $formatThisString
         );
-        $formatThisString = preg_replace("/" . self::$SpecialCodeIndicator . "/",'%',$formatThisString);
-        return $formatThisString;
     }
-
+    static private function setTemporaryPlaceHolder($formatThisString) {
+        return preg_replace('/' . self::$SpecialCodeIndicator . '/',self::$SpecialCodeIndicatorTempFormat,$formatThisString);
+    }
+    static private function unsetTemporaryPlaceHolder($formatThisString) {
+        return preg_replace("/" . self::$SpecialCodeIndicatorTempFormat . "/",self::$SpecialCodeIndicator,$formatThisString);
+    }
 
 }

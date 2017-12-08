@@ -4,7 +4,7 @@
 
 class PageController extends BaseController {
 
-    protected $userDto;
+    public $userDto;
     protected $authDto;
     protected $schoolDto;
     protected $authViewDto;

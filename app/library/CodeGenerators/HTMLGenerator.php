@@ -41,7 +41,7 @@ class HTMLGenerator
             
                 <h4 class="brief"><i>'  . Formatter::roleType($roleInfo['role']) . '</i></h4>
                 <div class="left col-xs-7">
-                    <h2>' . Formatter::personName($userDto->getNameArray(),'%P %F %m %L %S') . '</h2>
+                    <h2>' . $userDto->name->format('%P %F %m %L %S') . '</h2>
                     <p><strong>About: </strong> ' . $about . '</p>
                     <ul class="list-unstyled">
                         <li><i class="fa fa-building"></i> Address: </li>

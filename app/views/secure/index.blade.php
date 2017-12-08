@@ -1,14 +1,16 @@
 <?php
 $goToPage = '';
+$PAGE = (new SessionDao())->reviveSessionFromCache();
 
-$PAGE = new PageController(
-    new userDTO(),
-    new schoolDTO(),
-    new AuthorizationDTO(),
-    new AuthViewDTO(),
-    new FeatureFlipDTO()
-);
-$PAGE->loadSessionInfo();
+
+//$PAGE = new PageController(
+//    new userDTO(),
+//    new schoolDTO(),
+//    new AuthorizationDTO(),
+//    new AuthViewDTO(),
+//    new FeatureFlipDTO()
+//);
+//$PAGE->loadSessionInfo();
 
 //if($PAGE->featureFlipEnabled(array('social'))) { echo "IT IS READY"; }
 //else { echo "NO SHOW IT"; }
@@ -25,7 +27,7 @@ $PAGE->loadSessionInfo();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?php echo $PAGE->getCurrentSchoolName(); ?>  </title>
+    <title>PUT SCHOOL NAME HERE </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -60,7 +62,7 @@ $PAGE->loadSessionInfo();
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
                     <a href="index.html" class="site_title"><i class="fa fa-paw"></i>
-                        <span> <?php echo $PAGE->getCurrentSchoolName(); ?> </span></a>
+                        <span> PUT SCHOOL NAME HERE </span></a>
                 </div>
 
                 <div class="clearfix"></div>

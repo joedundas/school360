@@ -15,10 +15,9 @@ class CreateGradeLevels extends Migration {
 		Schema::create('grade_levels', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->timestamps();
 			$table->unsignedInteger('gradeOrder');
-			$table->char('gradeLevel',15);
-			//$table->text('gradeLevel_text');
+			$table->char('gradeLevel',10);
+			$table->timestamps();
 		});
 	}
 
