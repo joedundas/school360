@@ -2,20 +2,26 @@
 class UserDto
 {
 
-    protected $userId = null;
+    /*
+     * IMPORTANT:  DTO's should only contain data and getters/setters for that data.  Any domain/business logic
+     *   usually goes in the corresponding DAO for the DTO.
+     */
+
+    // Login information
+    protected $userId = false;
     protected $loginEmail = null;
     protected $currentRoleId = null;
     protected $currentSchoolId = null;
 
+    // About the user
     public $name = null;
     public $contactInfo = null;
     public $demographics = null;
 
+    // Dto Collections
     public $schools = null;
     public $roles = null;
-
-
-
+    public $authorizations = null;
 
 
     public function __construct()
@@ -25,8 +31,9 @@ class UserDto
         $this->contactInfo = new contactInformation();
         $this->roles = new RoleCollection();
         $this->schools = new SchoolCollection();
+        $this->authorizations = new AuthorizationsCollection();
+        $this->loginEmail = new EmailValueObject();
     }
-
 
     // Getters and Setters
     public function getName() {
@@ -54,10 +61,11 @@ class UserDto
         return $this->userId;
     }
     public function getLoginEmail() {
-        return $this->loginEmail;
+        return $this->loginEmail->getEmail();
     }
     public function setLoginEmail($email) {
-        $this->loginEmail = $email;
+        $this->loginEmail->setEmail($email);
+        $this->loginEmail->setType('login');
     }
 
 }

@@ -29,11 +29,19 @@ class UserHydrator
         }
     }
     static public function hydrateUserSchoolsFromDB($dto) {
-        $schools = schoolRepository::getSchoolIdsForUser($dto->getUserId());
-       // var_dump($schools); exit;
-//        foreach($schools as $idx=>$school) {
-//            $dto->addSchool($school);
-//        }
+        $schools = SchoolRepository::getSchoolIdsForUser($dto->getUserId());
+        $mappingToUserId = $dto->getUserId();
+        foreach($schools as $idx=>$school) {
+            $userId = $school['userId'];
+            if($userId !== $mappingToUserId) {
+                throw new Exception('Mapping of School Query Result to DTO where query result userID does not equal the DTO user ID');
+            }
+            $schoolDto = new SchoolDto();
+            SchoolHydrator::hydrateSchoolFromDB($schoolDto,$school);
+            $dto->schools->mapToRole($schoolDto->getId(),$school['roleId']);
+        }
+
+
     }
     static public function hydrateContactInfoResultsIntoUserDto(UserDto $dto,$results) {
         foreach($results as $idx=>$result) {

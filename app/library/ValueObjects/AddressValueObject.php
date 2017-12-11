@@ -16,15 +16,9 @@ class AddressValueObject implements ValueObjectInterface
     protected $zip = false;
     protected $country = false;
 
-    public function __construct($street1,$street2,$city,$state,$zip,$country = 'US',$type)
+    public function __construct()
     {
-        $this->setType($type);
-       $this->setStreet($street1);
-       $this->setStreet2($street2);
-       $this->setCity($city);
-       $this->setState($state);
-       $this->setZip($zip);
-       $this->setCountry($country);
+
     }
 
     public function format($format) {
@@ -44,7 +38,7 @@ class AddressValueObject implements ValueObjectInterface
 
     public function __toString()
     {
-        return $this->format('[%T] %S %S1 %C, %S %Z');
+        return '' . $this->format('[%T] %S %S1 %C, %S %Z');
     }
 
     public function getType($type) {

@@ -5,6 +5,13 @@ Route::get('login', function()
     return View::make('login');
 });
 
+Route::match(array('GET','POST'),'customer/list/{search?}',array('before'=>'auth', function($search='') {
+    return View::make('secure.personas.list',array('persona'=>'customer','search'=>$search));
+}));
+
+Route::match(array('GET','POST'),'calendar',array('before'=>'auth', function($search='') {
+    return View::make('secure.scheduler.calendar',array());
+}));
 //Route::get('secure', function()
 //{
 //    return View::make('secure/index');

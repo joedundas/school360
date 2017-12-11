@@ -17,11 +17,16 @@ class AuthenticationController extends BaseController {
         );
         Session::flush();
         if(Auth::attempt($userdata)) {
-            $SessionDao = new SessionDao(
+            $SessionManager = new SessionManager(
                 new CacheController()
             );
-            $SessionDao->initiate(Auth::user()->id);
-            $SessionDao->saveSessionToCache();
+            $roleDto = $SessionManager->loadUser(Auth::user()->id);
+            $SessionManager->loadAuthViews();
+//            $SessionManager->loadAuthorizations();
+            $SessionManager->loadFeatureCodes();
+            $SessionManager->loadFeatureFlips($roleDto);
+            $SessionManager->switchToRole($roleDto);
+            $SessionManager->saveSessionToCache();
 
         }
         else {

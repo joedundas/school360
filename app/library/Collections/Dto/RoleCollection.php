@@ -15,7 +15,7 @@ class RoleCollection extends AbstractDtoCollection
 
     public function getDefaultRoleDto() {
         $defaultRoleDto = false;
-        foreach($this->items as $userRoleId=>$role) {
+        foreach($this->items as $roleId=>$role) {
             if($role->getIsDefault() === 'Y' && $role->getCanLogIn() === 'Y') {
                 return $role;
             }

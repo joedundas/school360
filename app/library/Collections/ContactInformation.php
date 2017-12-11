@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: joedundas
- * Date: 12/6/17
- * Time: 10:36 AM
- */
 class contactInformation
 {
 

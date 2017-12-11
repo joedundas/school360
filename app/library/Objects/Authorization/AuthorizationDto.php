@@ -1,14 +1,12 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: joedundas
- * Date: 11/24/17
- * Time: 12:44 PM
- */
-class AuthorizationDto
+class AuthorizationDto implements DtoInterface
 {
 
+    /*
+     * IMPORTANT:  DTO's should only contain data and getters/setters for that data.  Any domain/business logic
+     *   usually goes in the corresponding DAO for the DTO.
+     */
 
 
     public function __construct() {
@@ -17,7 +15,9 @@ class AuthorizationDto
 
     }
 
-
+    public function getId() {
+        //@TODO implement this.
+    }
     public function hydrate_fromDB($userDto) {
         $this->createAuthorizationCodesArray($this->authorizationRepository->getAuthorizationCodes());
         $this->setUserDto($userDto);
@@ -29,9 +29,9 @@ class AuthorizationDto
     public function hydrate_fromArray($array,$userDto = false) {
         $this->authCodeInformation = $array['codes'];
         if($userDto !== false) {
-            $passedUserRoleId = $userDto->getCurrentUserRoleId();
-            $arrayUserRoleId = $array['userRoleId'];
-            if($passedUserRoleId !== $arrayUserRoleId) {
+            $passedRoleId = $userDto->getCurrentRoleId();
+            $arrayRoleId = $array['roleId'];
+            if($passedRoleId !== $arrayRoleId) {
                 throw new Exception('Security Protection: Authorizations can not be verified for user role.');
             }
             $this->setUserDto($userDto);
@@ -47,7 +47,7 @@ class AuthorizationDto
 
     protected $authorizationRepository;
     protected $userDto = false;
-    protected $userRoleId = false;
+    protected $roleId = false;
 
 
     protected function createAuthorizationCodesArray($codes) {
@@ -61,7 +61,7 @@ class AuthorizationDto
             'codes'=>$this->authCodeInformation
         );
         if($this->userAuthorizationsSet) {
-            $arr['userRoleId'] = $this->getUserRoleId();
+            $arr['roleId'] = $this->getRoleId();
             $arr['userAuth'] = $this->userAuthorizations;
         }
         return $arr;

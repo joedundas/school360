@@ -16,7 +16,7 @@ class CreateContactInfo extends Migration {
 		{
 			$table->increments('id');
 			$table->unsignedBigInteger('userId');
-			$table->unsignedBigInteger('userRoleId');
+			$table->unsignedBigInteger('roleId');
 			$table->char('isDefault',1)->default('N');
 			$table->char('contactType',15);
 			$table->char('entryType',15);

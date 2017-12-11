@@ -15,7 +15,7 @@ class CreateUserAuthorizations extends Migration {
 		Schema::create('user_authorizations', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->unsignedBigInteger('userRoleId');
+			$table->unsignedBigInteger('roleId');
 			$table->unsignedBigInteger('schoolId');
 			$table->char('permissionCode','20');
 			$table->text('permissionValue');

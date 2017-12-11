@@ -1,18 +1,18 @@
 <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
     @include('secure.includes.sidebar.general-menu')
-    <div class="menu_section">
+    {{--<div class="menu_section">--}}
 
-        <ul class="nav side-menu">
+        {{--<ul class="nav side-menu">--}}
 
         {{--@include('secure.includes.sidebar.menus.dashboard')--}}
 
             {{--@include('secure.includes.sidebar.menus.students')--}}
 
 
-        </ul>
-    </div>
-    @include('secure.includes.sidebar.menus.staff-menu')
+        {{--</ul>--}}
+    {{--</div>--}}
+    {{--@include('secure.includes.sidebar.menus.staff-menu')--}}
     {{--@if($SESSION)--}}
 
         {{--@endif--}}

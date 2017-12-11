@@ -16,10 +16,8 @@ class CreateUserToSchoolMapper extends Migration {
 		{
 			$table->increments('id');
 			$table->unsignedBigInteger('userId');
-			$table->unsignedBigInteger('userRoleId');
+			$table->unsignedBigInteger('roleId');
 			$table->unsignedBigInteger('schoolId');
-			$table->char('default_school',1)->default('Y');
-			$table->char('canLogIn',1)->default('Y');
 			$table->timestamps();
 			$table->softDeletes();
 		});

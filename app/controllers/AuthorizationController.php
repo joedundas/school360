@@ -11,7 +11,7 @@ class AuthorizationController extends BaseController {
     }
 
 
-    public function setAuthorizationForUserRole($userRoleId) {
+    public function setAuthorizationForUserRole($roleId) {
 
     }
 //    public function setAuthorizationForUserIdAtSchoolIdAsUserType($userDTO,$schoolDTO) {

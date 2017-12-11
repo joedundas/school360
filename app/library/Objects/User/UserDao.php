@@ -33,7 +33,9 @@ class UserDao
     public function roles() {
         return $this->dto->roles;
     }
-
+    public function schools() {
+        return $this->dto->schools;
+    }
     public function initiate($userId) {
         if($this->getDto() === null) {
             throw new Exception('User DAO must have User DTO set prior to hydrating from database');
@@ -60,7 +62,9 @@ class UserDao
 
     }
 
-
+    public function getUserId() {
+        return $this->dto->getUserId();
+    }
     public function setCurrentRoleId($roleId) {
        $this->dto->setCurrentRoleId($roleId);
     }

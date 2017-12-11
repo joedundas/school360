@@ -69,13 +69,13 @@ function modalController() {
 
 function pageController() {
     var me = this;
-    me.switchToRole = function(userRoleId) {
+    me.switchToRole = function(roleId) {
         ajaxFeed(
             {
                 'url': 'switchRole',
                 'loader': 'body',
                 'stopSubsequentAttemptsUntilComplete': true,
-                'data': {'userRoleId':userRoleId},
+                'data': {'roleId':roleId},
                 'submitType': 'POST',
                 'successCallback': function() { location.reload(); },
             }

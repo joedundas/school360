@@ -4,11 +4,17 @@
  * Created by PhpStorm.
  * User: joedundas
  * Date: 11/23/17
- * Time: 10:15 AM
+ * Time: 10:16 AM
  */
-class AbstractSchoolRepository extends AbstractRepository
+class SchoolRepository extends AbstractRepository
 {
     protected $query;
+
+    public function __construct() {
+
+    }
+
+
 
     static public function getSchoolIdsForUser($userId,$includeSchoolNames = true) {
         $query = DB::table('user_school_mapper');
@@ -19,15 +25,21 @@ class AbstractSchoolRepository extends AbstractRepository
         }
 
         $selections = array(
+            'user_school_mapper.userId as userId',
             'user_school_mapper.schoolId as schoolId',
-            'user_school_mapper.userRoleId as userRoleId',
-            'user_school_mapper.default_school as default_school',
-            'user_school_mapper.canLogIn as canLogIn'
+            'user_school_mapper.roleId as roleId',
+
         );
 
         if($includeSchoolNames) {
             // select school name from schools table
             $selections[] = 'schools.name as schoolName';
+            $selections[] = 'schools.address as street1';
+            $selections[] = 'schools.address2 as street2';
+            $selections[] = 'schools.city as city';
+            $selections[] = 'schools.state as state';
+            $selections[] = 'schools.zip as zip';
+
         }
         $query->select($selections);
         $query->where('user_school_mapper.userId','=',$userId);
@@ -38,5 +50,11 @@ class AbstractSchoolRepository extends AbstractRepository
         $query = DB::table('user_school_mapper');
         $query->where('user_school_mapper.schoolId','=',$schoolId);
         return self::performQuery($query);
+    }
+
+    public function getSingleSchoolById($schoolId) {
+        $this->query = DB::table('schools');
+        $this->query->where('schools.id','=',$schoolId);
+        return self::performQuery($this->query);
     }
 }

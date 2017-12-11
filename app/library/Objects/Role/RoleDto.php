@@ -8,6 +8,11 @@
  */
 class RoleDto implements DtoInterface
 {
+    /*
+     * IMPORTANT:  DTO's should only contain data and getters/setters for that data.  Any domain/business logic
+     *   usually goes in the corresponding DAO for the DTO.
+     */
+
     protected $roleId = false;
     protected $schoolId = false;
     protected $roleType = false;

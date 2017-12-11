@@ -6,7 +6,7 @@
  * Date: 12/6/17
  * Time: 1:45 PM
  */
-class SchoolCollection extends AbstractDtoCollection
+class AuthViewCollection extends AbstractDtoCollection
 {
 
 

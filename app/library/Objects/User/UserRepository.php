@@ -64,7 +64,7 @@ class UserRepository extends AbstractRepository
         $this->query->select(
             array(
                 'contact_info.userId as userId',
-                'contact_info.userRoleId as roleId',
+                'contact_info.roleId as roleId',
                 'contact_info.isDefault as isDefault',
                 'contact_info.contactType as type',
                 'contact_info.entryType as entryType',

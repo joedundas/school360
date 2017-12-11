@@ -37,25 +37,25 @@ class SeedTestingSchool extends Seeder
         $userId = DB::table('users')->insertGetId(
             array('firstName'=>'Gloria','lastName'=>'Rug','email'=>'teacher@someschool.edu','password'=>Hash::make('7383jmd2'),'canLogin'=>'Y')
         );
-        $userRoleId = DB::table('user_roles')->insertGetId(
+        $roleId = DB::table('user_roles')->insertGetId(
             array('role'=>'teacher','userId'=>$userId,'schoolId'=>$schoolId_1,'default_role'=>'Y')
         );
         DB::table('user_school_mapper')->insert(
-            array('userId'=>$userId,'userRoleId'=>$userRoleId,'schoolId'=>$schoolId_1,'default_school'=>'Y')
+            array('userId'=>$userId,'roleId'=>$roleId,'schoolId'=>$schoolId_1)
         );
-        $teacherId_1 = $userRoleId;
+        $teacherId_1 = $roleId;
 
         // Teacher 2
         $userId = DB::table('users')->insertGetId(
             array('firstName'=>'Bill','lastName'=>'McHiggins','email'=>'bill@someschool.edu','password'=>Hash::make('7383jmd2'),'canLogin'=>'Y')
         );
-        $userRoleId = DB::table('user_roles')->insertGetId(
+        $roleId = DB::table('user_roles')->insertGetId(
             array('role'=>'teacher','userId'=>$userId,'schoolId'=>$schoolId_1,'default_role'=>'Y')
         );
         DB::table('user_school_mapper')->insert(
-            array('userId'=>$userId,'userRoleId'=>$userRoleId,'schoolId'=>$schoolId_1,'default_school'=>'Y')
+            array('userId'=>$userId,'roleId'=>$roleId,'schoolId'=>$schoolId_1)
         );
-        $teacherId_2 = $userRoleId;
+        $teacherId_2 = $roleId;
 
         return array($teacherId_1,$teacherId_2);
     }
@@ -65,13 +65,13 @@ class SeedTestingSchool extends Seeder
         $userId = DB::table('users')->insertGetId(
             array('firstName'=>'Cynthia','lastName'=>'Dundas','email'=>'cdundas3@gmail.com','password'=>Hash::make('7383jmd2'),'canLogin'=>'Y')
         );
-        $userRoleId = DB::table('user_roles')->insertGetId(
+        $roleId = DB::table('user_roles')->insertGetId(
             array('role'=>'parent','userId'=>$userId,'schoolId'=>$schoolId_1,'default_role'=>'Y')
         );
         DB::table('user_school_mapper')->insert(
-            array('userId'=>$userId,'userRoleId'=>$userRoleId,'schoolId'=>$schoolId_1,'default_school'=>'Y')
+            array('userId'=>$userId,'roleId'=>$roleId,'schoolId'=>$schoolId_1)
         );
-        return $userRoleId;
+        return $roleId;
     }
 
     public function seed_student($schoolId_1,$parentId,$teacherId_1,$teacherId_2) {
@@ -80,17 +80,17 @@ class SeedTestingSchool extends Seeder
         $userId = DB::table('users')->insertGetId(
             array('firstName'=>'Joshua','lastName'=>'Dundas','email'=>'joshua.dundas@icloud.com','password'=>Hash::make('7383jmd2'),'canLogin'=>'Y')
         );
-        $userRoleId = DB::table('user_roles')->insertGetId(
+        $roleId = DB::table('user_roles')->insertGetId(
             array('role'=>'student','userId'=>$userId,'schoolId'=>$schoolId_1,'default_role'=>'Y')
         );
         DB::table('user_school_mapper')->insert(
-            array('userId'=>$userId,'userRoleId'=>$userRoleId,'schoolId'=>$schoolId_1,'default_school'=>'Y')
+            array('userId'=>$userId,'roleId'=>$roleId,'schoolId'=>$schoolId_1)
         );
         DB::table('user_relationship_map')->insert(
-            array('userRoleId'=>$userRoleId,'relatedTo_userRoleId'=>$parentId,'relatedToIs'=>'parent')
+            array('roleId'=>$roleId,'relatedTo_roleId'=>$parentId,'relatedToIs'=>'parent')
         );
         DB::table('user_relationship_map')->insert(
-            array('userRoleId'=>$userRoleId,'relatedTo_userRoleId'=>$teacherId_1,'relatedToIs'=>'teacher')
+            array('roleId'=>$roleId,'relatedTo_roleId'=>$teacherId_1,'relatedToIs'=>'teacher')
         );
 
 
@@ -98,17 +98,17 @@ class SeedTestingSchool extends Seeder
         $userId = DB::table('users')->insertGetId(
             array('firstName'=>'James','lastName'=>'Dundas','email'=>'james.dundas@icloud.com','password'=>Hash::make('7383jmd2'),'canLogin'=>'Y')
         );
-        $userRoleId = DB::table('user_roles')->insertGetId(
+        $roleId = DB::table('user_roles')->insertGetId(
             array('role'=>'student','userId'=>$userId,'schoolId'=>$schoolId_1,'default_role'=>'Y')
         );
         DB::table('user_school_mapper')->insert(
-            array('userId'=>$userId,'userRoleId'=>$userRoleId,'schoolId'=>$schoolId_1,'default_school'=>'Y')
+            array('userId'=>$userId,'roleId'=>$roleId,'schoolId'=>$schoolId_1)
         );
         DB::table('user_relationship_map')->insert(
-            array('userRoleId'=>$userRoleId,'relatedTo_userRoleId'=>$parentId,'relatedToIs'=>'parent')
+            array('roleId'=>$roleId,'relatedTo_roleId'=>$parentId,'relatedToIs'=>'parent')
         );
         DB::table('user_relationship_map')->insert(
-            array('userRoleId'=>$userRoleId,'relatedTo_userRoleId'=>$teacherId_2,'relatedToIs'=>'teacher')
+            array('roleId'=>$roleId,'relatedTo_roleId'=>$teacherId_2,'relatedToIs'=>'teacher')
         );
 
 
@@ -122,18 +122,18 @@ class SeedTestingSchool extends Seeder
         );
 
         // Role 1 at School 1
-        $userRoleId = DB::table('user_roles')->insertGetId(
+        $roleId = DB::table('user_roles')->insertGetId(
             array('role'=>'staff','userId'=>$userId,'schoolId'=>$schoolId_1,'default_role'=>'Y')
         );
         DB::table('user_school_mapper')->insert(
-                array('userId'=>$userId,'userRoleId'=>$userRoleId,'schoolId'=>$schoolId_1,'default_school'=>'N')
+                array('userId'=>$userId,'roleId'=>$roleId,'schoolId'=>$schoolId_1)
         );
 
         DB::table('contact_info')->insert(
             array(
                 array(
                     'userId'=>$userId,
-                    'userRoleId'=>$userRoleId,
+                    'roleId'=>$roleId,
                     'isDefault'=>'Y',
                     'contactType'=>'email',
                     'entryType'=>'Home',
@@ -141,7 +141,7 @@ class SeedTestingSchool extends Seeder
                 ),
                 array(
                     'userId'=>$userId,
-                    'userRoleId'=>$userRoleId,
+                    'roleId'=>$roleId,
                     'isDefault'=>'Y',
                     'contactType'=>'address',
                     'entryType'=>'Home',
@@ -153,21 +153,21 @@ class SeedTestingSchool extends Seeder
         DB::table('demographics')->insert(
             array(
                 'userId'=>$userId,
-                'userRoleId'=>$userRoleId,
+                'roleId'=>$roleId,
                 'dem-birthdate'=>'',
                 'dem-about'=>'This is a little blurb about me.  I hope you like it.  It can be changed in your profile.'
             )
         );
 
         // Role 2 at School 2
-        $userRoleId = DB::table('user_roles')->insertGetId(
+        $roleId = DB::table('user_roles')->insertGetId(
             array('role'=>'staff','userId'=>$userId,'schoolId'=>$schoolId_2,'default_role'=>'Y')
         );
         DB::table('user_school_mapper')->insert(
-            array('userId'=>$userId,'userRoleId'=>$userRoleId,'schoolId'=>$schoolId_2,'default_school'=>'Y')
+            array('userId'=>$userId,'roleId'=>$roleId,'schoolId'=>$schoolId_2)
         );
         DB::table('user_authorizations')->insert(
-            array('userRoleId'=>$userRoleId,'schoolId'=>$schoolId_2,'permissionCode'=>'add_staff','permissionValue'=>'Y')
+            array('roleId'=>$roleId,'schoolId'=>$schoolId_2,'permissionCode'=>'add_staff','permissionValue'=>'Y')
         );
 
 

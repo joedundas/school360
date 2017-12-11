@@ -1,21 +1,6 @@
 <?php
 $goToPage = '';
-$PAGE = (new SessionDao())->reviveSessionFromCache();
-
-
-//$PAGE = new PageController(
-//    new userDTO(),
-//    new schoolDTO(),
-//    new AuthorizationDTO(),
-//    new AuthViewDTO(),
-//    new FeatureFlipDTO()
-//);
-//$PAGE->loadSessionInfo();
-
-//if($PAGE->featureFlipEnabled(array('social'))) { echo "IT IS READY"; }
-//else { echo "NO SHOW IT"; }
-
-
+$PAGE = (new SessionManager())->reviveSessionFromCache();
 
 ?>
 <!DOCTYPE html>

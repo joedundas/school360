@@ -16,7 +16,7 @@ class CreateDemographics extends Migration {
 		{
 			$table->increments('id');
 			$table->unsignedBigInteger('userId')->index();
-			$table->unsignedBigInteger('userRoleId')->index();
+			$table->unsignedBigInteger('roleId')->index();
 
 			// actual demographics items should start with dem-, to make
             //  sure they are properly identified as demographical items

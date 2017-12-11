@@ -15,8 +15,8 @@ class CreateUserRelationshipMap extends Migration {
 		Schema::create('user_relationship_map', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->unsignedBigInteger('userRoleId');
-			$table->unsignedBigInteger('relatedTo_userRoleId');
+			$table->unsignedBigInteger('roleId');
+			$table->unsignedBigInteger('relatedTo_roleId');
 			$table->char('relatedToIs');
 			$table->date('startDate')->nullable();
 			$table->date('endDate')->nullable();

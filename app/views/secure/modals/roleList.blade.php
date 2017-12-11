@@ -36,9 +36,9 @@ $PAGE->loadSessionInfo();
 <?php
 
                             $roles = $PAGE->getUsersRoles();
-      foreach($roles as $userRoleId=>$info) {
+      foreach($roles as $roleId=>$info) {
           echo HTMLGenerator::createUserRoleCard(
-              $userRoleId,
+              $roleId,
               $PAGE->getUserDto(),
               array(
                 'showSchool'=>true

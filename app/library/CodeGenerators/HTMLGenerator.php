@@ -10,18 +10,18 @@ class HTMLGenerator
 {
 
 
-    static public function createUserRoleCard($userRoleId, userDTO $userDto,$params = array()) {
+    static public function createUserRoleCard($roleId, userDTO $userDto,$params = array()) {
 
         $clickToLogin = isset($params['login']) ? $params['login'] : true;
         $showSchoolName = isset($params['showSchool']) ? $params['showSchool'] : false;
 
-        $roleInfo = $userDto->getRoleByUserRoleId($userRoleId);
+        $roleInfo = $userDto->getRoleByUserRoleId($roleId);
 
 
         $cardHtml = '
     <div class="col-md-12 col-sm-12 col-xs-12 profile_details" ';
         if($clickToLogin) {
-            $cardHtml .= 'onclick="controller.page.switchToRole(' . $userRoleId . ')"';
+            $cardHtml .= 'onclick="controller.page.switchToRole(' . $roleId . ')"';
         }
         $cardHtml .= '>
         <div class="well profile_view">
@@ -34,8 +34,8 @@ class HTMLGenerator
             $cardHtml .= '<h4 class="brief"><i><b>'  . $schoolName. '</b></i></h4>';
         }
 
-        $about = $userDto->getDemographicsItemForUserRole($userRoleId,'about');
-        $email = $userDto->getDefaultEmailForUserRole($userRoleId);
+        $about = $userDto->getDemographicsItemForUserRole($roleId,'about');
+        $email = $userDto->getDefaultEmailForUserRole($roleId);
         //var_dump($email);
         $cardHtml .= '
             
