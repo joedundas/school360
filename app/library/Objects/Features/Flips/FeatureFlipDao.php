@@ -31,7 +31,9 @@ class FeatureFlipDao
     public function getSchoolId() {
         return $this->schoolId;
     }
-
+    public function getFeatureFlipStatus($feature_code) {
+            return $this->getFeatureFlipStatusForSchool($this->getSchoolId(),$feature_code);
+    }
     public function getFeatureFlipStatusForSchool($schoolId,$feature_code) {
 
         if($this->featureCodesCollection === false || !$this->featureCodesCollection->isCodesLoaded()) {

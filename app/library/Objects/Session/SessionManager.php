@@ -15,7 +15,7 @@ class SessionManager
     public $user;
     public $authorizationsDao;
     public $authViewsDao;
-    public $featureFlipsDao;
+    public $featureFlips;
 
     // Dto collections
     public $authViewsCollection;
@@ -27,13 +27,14 @@ class SessionManager
     private $featureRepository;
 
 
+
     public function switchToRole(RoleDto $roleDto) {
 
         $this->setCurrentRoleId($roleDto->getId());
         $this->setCurrentSchoolId($roleDto->getSchoolId());
         $schoolId = $roleDto->getSchoolId();
-        $this->featureFlipsDao->setFeatureCodesCollection($this->featureCodesCollection);
-        $this->featureFlipsDao->setFeatureFlipsCollection($this->featureFlipsCollection[$schoolId]);
+        $this->featureFlips->setFeatureCodesCollection($this->featureCodesCollection);
+        $this->featureFlips->setFeatureFlipsCollection($this->featureFlipsCollection[$schoolId]);
     }
 
     public function __construct( CacheControllerInterface $cache = null) {
@@ -44,7 +45,7 @@ class SessionManager
         $this->user = new UserDao(new UserDto()); // finished
         $this->authViewsDao = new AuthViewDao();
         $this->authorizationsDao = new AuthorizationDao();
-        $this->featureFlipsDao = new FeatureFlipDao();
+        $this->featureFlips = new FeatureFlipDao();
         $this->featureCodesCollection = new FeatureCodesCollection();
 
         $this->authViewsCollection = new AuthViewCollection();
@@ -150,8 +151,8 @@ class SessionManager
         $this->featureCodesCollection = unserialize($this->cache->get('featureCodes'));
         $this->setCurrentRoleId($this->cache->get('currentRoleId'));
         $this->setCurrentSchoolId($this->cache->get('currentSchoolId'));
-        $this->featureFlipsDao->setFeatureCodesCollection($this->featureCodesCollection);
-        $this->featureFlipsDao->setFeatureFlipsCollection($this->featureFlipsCollection[$this->getCurrentSchoolId()]);
+        $this->featureFlips->setFeatureCodesCollection($this->featureCodesCollection);
+        $this->featureFlips->setFeatureFlipsCollection($this->featureFlipsCollection[$this->getCurrentSchoolId()]);
         return $this;
     }
 
@@ -167,4 +168,6 @@ class SessionManager
     public function getCurrentSchoolId() {
         return $this->user->getCurrentSchoolId();
     }
+
+
 }

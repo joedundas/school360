@@ -62,6 +62,10 @@ class UserDao
 
     }
 
+    public function getCurrentRoleDto() {
+        return $this->roles()->getById($this->getCurrentRoleId());
+    }
+
     public function getUserId() {
         return $this->dto->getUserId();
     }

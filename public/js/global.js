@@ -87,10 +87,29 @@ function pageController() {
     }
 
 }
-function controller(pageController,modalController) {
+function sessionController() {
+    var me = this;
+
+    me.refresh = function() {
+        ajaxFeed(
+            {
+                'url': 'session/refresh',
+                'loader': 'body',
+                'stopSubsequentAttemptsUntilComplete': true,
+                'data': {},
+                'submitType': 'POST',
+                'successCallback': function() { location.reload(); },
+            }
+        );
+    };
+
+}
+function controller(pageController,modalController,sessionController) {
+
     var me = this;
     me.modals = modalController;
     me.page = pageController;
+    me.session = sessionController;
 
 }
 

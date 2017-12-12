@@ -31,7 +31,8 @@ $PAGE = (new SessionManager())->reviveSessionFromCache();
     <script>
         var controller = new controller(
             new pageController(),
-            new modalController()
+            new modalController(),
+            new sessionController()
         );
 
     </script>

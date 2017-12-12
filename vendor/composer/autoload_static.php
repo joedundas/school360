@@ -276,7 +276,7 @@ class ComposerStaticInit0e37c4e45dcbd7fa3c9afcd7c73563f2
         'ModalViewController' => __DIR__ . '/../..' . '/app/controllers/ModalViewController.php',
         'ModalViews' => __DIR__ . '/../..' . '/app/models/ModalViews.php',
         'Normalizer' => __DIR__ . '/..' . '/patchwork/utf8/src/Normalizer.php',
-        'PageController' => __DIR__ . '/../..' . '/app/controllers/PageController.php',
+        'PageController' => __DIR__ . '/../..',
         'PersonsNameValueObject' => __DIR__ . '/../..' . '/app/library/ValueObjects/PersonsNameValueObject.php',
         'PhoneValueObject' => __DIR__ . '/../..' . '/app/library/ValueObjects/PhoneValueObject.php',
         'RecurrenceUtilities' => __DIR__ . '/../..' . '/app/library/Utilities/RecurrenceUtilities.php',

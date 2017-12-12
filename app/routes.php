@@ -49,7 +49,7 @@ Route::match(array('GET','POST'),'modal/{view}','ModalViewController@getModalVie
 Route::post('login','AuthenticationController@login');
 Route::match(array('GET','POST'),'doLogout','AuthenticationController@doLogout');
 Route::match(array('GET','POST'),'switchRole',array('before'=>'auth', 'uses'=>'AuthenticationController@switchToRole'));
-
+Route::match(array('GET','POST'),'session/refresh',array('before'=>'auth', 'uses'=>'AuthenticationController@refreshSession'));
 //// AJAX Responses
 //Route::get('utilities/stateList/{searchTerm?}','AjaxController@getListOfStates');
 

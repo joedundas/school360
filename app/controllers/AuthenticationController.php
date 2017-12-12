@@ -17,17 +17,10 @@ class AuthenticationController extends BaseController {
         );
         Session::flush();
         if(Auth::attempt($userdata)) {
-            $SessionManager = new SessionManager(
-                new CacheController()
-            );
-            $roleDto = $SessionManager->loadUser(Auth::user()->id);
-            $SessionManager->loadAuthViews();
-//            $SessionManager->loadAuthorizations();
-            $SessionManager->loadFeatureCodes();
-            $SessionManager->loadFeatureFlips($roleDto);
-            $SessionManager->switchToRole($roleDto);
-            $SessionManager->saveSessionToCache();
 
+            $this->createNewSession(
+                new SessionManager(new CacheController())
+            );
         }
         else {
             $response->insertGlobalErrors(array('Could not authenticate user'));
@@ -35,8 +28,32 @@ class AuthenticationController extends BaseController {
          return Response::make($response->toJson());
     }
 
+    public function refreshSession() {
+        $currentSession = new SessionManager();
+        $currentSession->reviveSessionFromCache();
+        $currentRoleDto = $currentSession->user->getCurrentRoleDto();
+
+        $SessionManager = $this->createNewSession(new SessionManager(new CacheController()));
+        $SessionManager->switchToRole($currentRoleDto);
+    }
+    public function createNewSession(SessionManager $SessionManager) {
+
+        //$SessionManager->cache->flush();
+        $roleDto = $SessionManager->loadUser(Auth::user()->id);
+        $SessionManager->loadAuthViews();
+//            $SessionManager->loadAuthorizations();
+        $SessionManager->loadFeatureCodes();
+        $SessionManager->loadFeatureFlips($roleDto);
+        $SessionManager->switchToRole($roleDto);
+        $SessionManager->saveSessionToCache();
+        return $SessionManager;
+    }
+
     public function doLogout() {
-        Session::flush();
+        $sessionManager = new SessionManager();
+        $sessionManager->reviveSessionFromCache();
+        $sessionManager->cache->flush(true);
+
         Auth::logout();
         return Redirect::to('login');
     }

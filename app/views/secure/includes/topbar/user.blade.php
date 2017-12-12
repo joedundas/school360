@@ -21,6 +21,12 @@
                 </a>
             </li>
             @endif
+        <li>
+            <a onclick="controller.session.refresh()">
+                <span class="badge bg-red pull-right">50%</span>
+                <span>Refresh/Reload Cache</span>
+            </a>
+        </li>
         <li><a href="doLogout"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
     </ul>
 </li>
