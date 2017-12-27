@@ -20,7 +20,8 @@ class FeatureRepository extends AbstractRepository
             'feature_codes.subcode as subcode',
             'feature_codes.defaultStatus as defaultStatus',
             'feature_codes.title as title',
-            'feature_codes.description as description'
+            'feature_codes.description as description',
+            'feature_codes.memberCanSet as memberCanSet'
         ));
         return self::performQuery($query,'FETCH_ASSOC');
     }

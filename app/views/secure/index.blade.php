@@ -12,7 +12,7 @@ $PAGE = (new SessionManager())->reviveSessionFromCache();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>PUT SCHOOL NAME HERE </title>
+    <title>{{$PAGE->user->getCurrentSchoolDto()->getName()}}</title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -27,20 +27,39 @@ $PAGE = (new SessionManager())->reviveSessionFromCache();
     <link href="../build/css/custom.min.css" rel="stylesheet">
 
     @include('secure.includes.js')
-
+<style>
+    .blind {
+        background-color:white;
+        display:none;
+        position:absolute;
+        top:0px;
+        left:0px;
+        width:100%;
+        height:100%;
+    }
+</style>
     <script>
         var controller = new controller(
-            new pageController(),
-            new modalController(),
+            new pageController(
+                new modalController(),
+                new workingBlindController()
+            ),
             new sessionController()
         );
+
+        var ajax = new ajaxController();
+
 
     </script>
 </head>
 
 <body class="nav-md">
 
+<?php
+echo $PAGE->getCurrentSchoolId()  . "--- " . $PAGE->featureFlips->getFeatureFlipStatus('api:logging');
 
+       // var_dump($PAGE->featureFlips);
+        ?>
 
 <div class="container body">
     <div class="main_container">
@@ -48,7 +67,7 @@ $PAGE = (new SessionManager())->reviveSessionFromCache();
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
                     <a href="index.html" class="site_title"><i class="fa fa-paw"></i>
-                        <span> PUT SCHOOL NAME HERE </span></a>
+                        <span>{{$PAGE->user->getCurrentSchoolDto()->getName()}}</span></a>
                 </div>
 
                 <div class="clearfix"></div>
@@ -56,7 +75,6 @@ $PAGE = (new SessionManager())->reviveSessionFromCache();
                 <!-- menu profile quick info -->
                 @include('secure.includes.sidebar.quick-user-info')
                 <!-- /menu profile quick info -->
-
                 <br />
 
                 <!-- sidebar menu -->
@@ -100,8 +118,92 @@ $PAGE = (new SessionManager())->reviveSessionFromCache();
 <script src="../build/js/main.js"></script>
 
 <script>
-
+function receiveTestResults(dta) {
+   // alert(JSON.stringify(dta));
+}
 $(document).ready(function() {
+
+    controller.page.ajax.send(
+        {
+          url:'api/test',
+            data:{'hello':'dolly'},
+            'callback': {
+              'success':receiveTestResults
+            }
+        }
+    );
+
+//    controller.page.ajax.send(
+//        {
+//            url:'test2',
+//            'callback': {
+//                'success':receiveTestResults
+//            }
+//        }
+//    );
+//
+//
+//
+//    controller.page.ajax.send(
+//        {
+//            url:'test2',
+//            'callback': {
+//                'success':receiveTestResults
+//            }
+//        }
+//    );
+//    setTimeout(function() {
+//        controller.page.ajax.send(
+//            {
+//                url:'test2',
+//                'callback': {
+//                    'success':receiveTestResults
+//                }
+//            }
+//        );
+//    },5000);
+
+//
+//    return {
+//        'submitType':'GET',
+//        'dataType':'json',
+//        'url':'',
+//        'loader': {
+//
+//        },
+//        'blockUntilDone':false,
+//        'passthru': {},
+//        'sessionFlash':{},
+//        'data':{},
+//        'verbose':{
+//            'showSuccessData':true,
+//            'showErrorData':true
+//        },
+//        'callback': {
+//            'error': function() {},
+//            'success': function() {}
+//        }
+//    };
+//
+//
+//
+//    'url': 'session/refresh',
+//        'loader': {'attachTo':'body','showLoadingGif':true,'hideWhenComplete':false  },
+//    'stopSubsequentAttemptsUntilComplete': true,
+//        'data': {},
+//    'submitType': 'POST',
+//        'successCallback': controller.page.reload(1000),
+//    controller.blind.show({
+////        'attachTo':'body',
+////        'spinner': { 'show':false }
+//    });
+
+//    var max = 50000;
+//    var min = 500;
+//    for(var i=0; i<200; i++) {
+//            var ctr = ajax.send();
+//    }
+
 
     initiate_to_page = "<?php echo $goToPage; ?>";
     if(initiate_to_page == '') {
@@ -111,7 +213,11 @@ $(document).ready(function() {
     initiate_to_page = '';
 });
 
-
+function randomInteger() {
+    var max = 1000000;
+    var min = 500;
+    return Math.floor(Math.random() * (max-min)) + min;
+}
 </script>
 
 </body>

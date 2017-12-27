@@ -4,19 +4,12 @@ Route::get('login', function()
 {
     return View::make('login');
 });
-
 Route::match(array('GET','POST'),'customer/list/{search?}',array('before'=>'auth', function($search='') {
     return View::make('secure.personas.list',array('persona'=>'customer','search'=>$search));
 }));
-
 Route::match(array('GET','POST'),'calendar',array('before'=>'auth', function($search='') {
     return View::make('secure.scheduler.calendar',array());
 }));
-//Route::get('secure', function()
-//{
-//    return View::make('secure/index');
-//});
-
 Route::get('secure', array('before'=>'auth', function() {
     return View::make('secure/index');
 }));
@@ -40,13 +33,20 @@ Route::match(array('GET','POST'),'modal/{view}','ModalViewController@getModalVie
 //    return View::make($bladeFile);
 //}));
 //
-//Route::match(array('GET','POST'),'exampleForms',array('before'=>'auth', function() {
-//    return PageTextController::processText(View::make('secure.examples.exampleForms'));
-//}));
+Route::match(array('GET','POST'),'api/test',array('before'=>'auth', function() {
+    $api = new ApiController('AuthenticationController@tester',Input::all());
+    return $api->call();
+    //return $api->call((new AuthenticationController())->tester());
+}));
 //
 //
 //
+
+
+
 Route::post('login','AuthenticationController@login');
+//Route::match(array('GET','POST'),'api/test','AuthenticationController@tester');
+//Route::match(array('GET','POST'),'test2','AuthenticationController@tester');
 Route::match(array('GET','POST'),'doLogout','AuthenticationController@doLogout');
 Route::match(array('GET','POST'),'switchRole',array('before'=>'auth', 'uses'=>'AuthenticationController@switchToRole'));
 Route::match(array('GET','POST'),'session/refresh',array('before'=>'auth', 'uses'=>'AuthenticationController@refreshSession'));

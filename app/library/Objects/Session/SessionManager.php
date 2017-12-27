@@ -32,9 +32,15 @@ class SessionManager
 
         $this->setCurrentRoleId($roleDto->getId());
         $this->setCurrentSchoolId($roleDto->getSchoolId());
+
         $schoolId = $roleDto->getSchoolId();
         $this->featureFlips->setFeatureCodesCollection($this->featureCodesCollection);
-        $this->featureFlips->setFeatureFlipsCollection($this->featureFlipsCollection[$schoolId]);
+        $this->loadFeatureFlips($roleDto,true);
+      //  echo "setting feature flips collection to school ID [" . $schoolId . "]]";
+       $this->featureFlips->setFeatureFlipsCollection($this->featureFlipsCollection[$schoolId]);
+   //     var_dump($this->featureFlipsCollection[$schoolId]);
+
+        $this->saveSessionToCache();
     }
 
     public function __construct( CacheControllerInterface $cache = null) {
@@ -64,8 +70,8 @@ class SessionManager
             throw new Exception('Could not initiate Session with a default role');
         }
 
-//        $this->setCurrentRoleId($defaultRoleDto->getRoleId());
-//        $this->setCurrentSchoolId($defaultRoleDto->getSchoolId());
+        $this->setCurrentRoleId($defaultRoleDto->getRoleId());
+        $this->setCurrentSchoolId($defaultRoleDto->getSchoolId());
 
         return $defaultRoleDto;
     }
@@ -86,6 +92,7 @@ class SessionManager
     public function loadFeatureCodes() {
         $this->featureCodesCollection->reset();
         $featureCodes = $this->featureRepository->getFeatureCodes();
+
         foreach($featureCodes as $idx=>$featureCode) {
             $dto = new FeatureCodeDto();
             FeatureFlipHydrator::hydrateFeatureCodeDtoFromDB($dto,$featureCode);
@@ -116,15 +123,17 @@ class SessionManager
         $collection = new FeatureFlipsCollection();
 
         $featureFlips = $this->featureRepository->getFeatureFlipsForSchoolId($schoolId);
+
         foreach($featureFlips as $idx=>$featureFlip) {
-            $codeKey = $featureFlip['code'] . ':' . $featureFlip['subcode'];
             $dto = new FeatureFlipDto();
             FeatureFlipHydrator::hydrateFeatureFlipDtoFromFeatureFlipDB($dto,$featureFlip);
             $collection->add($dto);
         }
         $collection->setSchoolFeatureFlipsLoaded(true);
         $collection->setSchoolId($schoolId);
+
         $this->featureFlipsCollection[$schoolId] = $collection;
+
     }
     public function getNumberOfRoles() {
         //@TODO this should be somewhere else (roles)

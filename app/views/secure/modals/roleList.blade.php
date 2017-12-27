@@ -1,12 +1,5 @@
 <?php
-$PAGE = new PageController(
-new userDTO(),
-new schoolDTO(),
-new AuthorizationDTO(),
-new AuthViewDTO(),
-new FeatureFlipDTO()
-);
-$PAGE->loadSessionInfo();
+$PAGE = (new SessionManager())->reviveSessionFromCache();
 
 
 
@@ -35,11 +28,11 @@ $PAGE->loadSessionInfo();
 
 <?php
 
-                            $roles = $PAGE->getUsersRoles();
-      foreach($roles as $roleId=>$info) {
+                            $roles = $PAGE->user->roles()->asArray();
+      foreach($roles as $roleId=>$roleDto) {
+
           echo HTMLGenerator::createUserRoleCard(
-              $roleId,
-              $PAGE->getUserDto(),
+                $roleDto,
               array(
                 'showSchool'=>true
               )

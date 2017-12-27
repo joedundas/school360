@@ -26,12 +26,10 @@ class CacheController extends BaseController implements CacheControllerInterface
 
     public function flush($flushAuth = false)
     {
+        Session::forget('cache');
         if ($flushAuth) {
             Session::flush();
-            return true;
         }
-        Session::forget('cache');
-        return true;
 
     }
 

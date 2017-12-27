@@ -20,6 +20,7 @@ class CreateFeatureCodes extends Migration {
 			$table->char('defaultStatus',3)->default('off');
 			$table->text('title');
 		    $table->text('description');
+		    $table->char('memberCanSet',1)->default('N');
 			$table->timestamps();
 		});
 	}

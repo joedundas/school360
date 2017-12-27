@@ -12,18 +12,18 @@ class AjaxResponseMessage
     {
 
     }
-    public function toJson() {
-
-        return json_encode(
-            array(
-                'error'=>$this->inError(),
-                'messages'=>array(
-                    'form'=>$this->formErrors,
-                    'meta'=>$this->globalErrors
-                ),
-                'passback'=>$this->passback,
-            )
+    public function asArray() {
+        return array(
+            'error'=>$this->inError(),
+            'messages'=>array(
+                'form'=>$this->formErrors,
+                'meta'=>$this->globalErrors
+            ),
+            'passback'=>$this->passback,
         );
+    }
+    public function toJson() {
+        return json_encode( $this->asArray() );
     }
     public function inError() {
         return $this->error;

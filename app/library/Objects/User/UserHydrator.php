@@ -30,6 +30,7 @@ class UserHydrator
     }
     static public function hydrateUserSchoolsFromDB($dto) {
         $schools = SchoolRepository::getSchoolIdsForUser($dto->getUserId());
+
         $mappingToUserId = $dto->getUserId();
         foreach($schools as $idx=>$school) {
             $userId = $school['userId'];
@@ -38,6 +39,7 @@ class UserHydrator
             }
             $schoolDto = new SchoolDto();
             SchoolHydrator::hydrateSchoolFromDB($schoolDto,$school);
+            $dto->schools->add($schoolDto);
             $dto->schools->mapToRole($schoolDto->getId(),$school['roleId']);
         }
 

@@ -15,8 +15,11 @@ class FeatureFlipHydrator
         $dto->setDefault($result['defaultStatus']);
         $dto->setTitle($result['title']);
         $dto->setDescription($result['description']);
+        $dto->setMemberCanSet($result['memberCanSet']);
     }
     static public function hydrateFeatureFlipDtoFromFeatureFlipDB(FeatureFlipDto $dto,$result) {
+        $dto->setCode($result['code']);
+        $dto->setSubcode($result['subcode']);
         $dto->setSchoolId($result['schoolId']);
         $dto->setStatus($result['status']);
     }

@@ -15,7 +15,7 @@ class FeatureCodeDto extends AbstractFeatureDto
     private $default = false;
     private $title;
     private $description;
-
+    private $memberCanSet;
 
     static $codeKeySeparator = ':';
 
@@ -28,6 +28,12 @@ class FeatureCodeDto extends AbstractFeatureDto
         return self::$codeKeySeparator;
     }
 
+    public function getMemberCanSet() {
+        return $this->memberCanSet;
+    }
+    public function setMemberCanSet($canSet = 'N') {
+        $this->memberCanSet = $canSet;
+    }
     public function getDefault()
     {
         return $this->default;

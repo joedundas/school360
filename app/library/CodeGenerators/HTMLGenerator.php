@@ -10,38 +10,42 @@ class HTMLGenerator
 {
 
 
-    static public function createUserRoleCard($roleId, userDTO $userDto,$params = array()) {
+    static public function createUserRoleCard(RoleDto $roleDto,$params = array()) {
 
         $clickToLogin = isset($params['login']) ? $params['login'] : true;
         $showSchoolName = isset($params['showSchool']) ? $params['showSchool'] : false;
 
-        $roleInfo = $userDto->getRoleByUserRoleId($roleId);
+
 
 
         $cardHtml = '
     <div class="col-md-12 col-sm-12 col-xs-12 profile_details" ';
         if($clickToLogin) {
-            $cardHtml .= 'onclick="controller.page.switchToRole(' . $roleId . ')"';
+            $cardHtml .= 'onclick="controller.page.switchToRole(' . $roleDto->getRoleId() . ')"';
         }
         $cardHtml .= '>
         <div class="well profile_view">
             <div class="col-sm-12">
             ';
-        if($showSchoolName) {
-            $schools = $userDto->getSchoolsArray();
-            $schoolId = $roleInfo['schoolId'];
-            $schoolName = $schools[$schoolId]['name'];
-            $cardHtml .= '<h4 class="brief"><i><b>'  . $schoolName. '</b></i></h4>';
-        }
+//        if($showSchoolName) {
+//            $schools = $userDto->getSchoolsArray();
+//            $schoolId = $roleInfo['schoolId'];
+//            $schoolName = $schools[$schoolId]['name'];
+//            $cardHtml .= '<h4 class="brief"><i><b>'  . $schoolName. '</b></i></h4>';
+//        }
 
-        $about = $userDto->getDemographicsItemForUserRole($roleId,'about');
-        $email = $userDto->getDefaultEmailForUserRole($roleId);
+//        $about = $userDto->getDemographicsItemForUserRole($roleId,'about');
+//        $email = $userDto->getDefaultEmailForUserRole($roleId);
+
+        $email = 'myemail@email.com';
+        $about = 'This is a fake about';
+
         //var_dump($email);
         $cardHtml .= '
             
-                <h4 class="brief"><i>'  . Formatter::roleType($roleInfo['role']) . '</i></h4>
+                <h4 class="brief"><i>'  . Formatter::roleType($roleDto->getRoleType()) . '</i></h4>
                 <div class="left col-xs-7">
-                    <h2>' . $userDto->name->format('%P %F %m %L %S') . '</h2>
+                    <h2>' . $roleDto->name->format('%P %F %m %L %S') . ' ' .  $roleDto->getRoleId()  . '</h2>
                     <p><strong>About: </strong> ' . $about . '</p>
                     <ul class="list-unstyled">
                         <li><i class="fa fa-building"></i> Address: </li>

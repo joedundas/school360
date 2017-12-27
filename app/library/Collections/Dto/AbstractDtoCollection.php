@@ -23,7 +23,9 @@ class AbstractDtoCollection
         }
         return $this->items[$id];
     }
-
+    public function asArray() {
+        return $this->items;
+    }
     public function mapToRole($mapId,$roleId) {
         if(!array_key_exists($mapId,$this->itemToRoleMap)) {
             $this->itemToRoleMap[$mapId] = array();
@@ -40,4 +42,5 @@ class AbstractDtoCollection
     private function setMappingToRole($bool) {
         $this->mappingToRole = $bool;
     }
+
 }

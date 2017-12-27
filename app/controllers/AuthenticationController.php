@@ -8,6 +8,13 @@ class AuthenticationController extends BaseController {
 
     }
 
+    public function tester(array $input) {
+
+        $response = DependencyInjection::ApiResponse();
+        $response->addPassback($input);
+        return $response;
+
+    }
     public function login() {
         $response = DependencyInjection::ApiResponse();
         $userdata = array(
@@ -25,9 +32,18 @@ class AuthenticationController extends BaseController {
         else {
             $response->insertGlobalErrors(array('Could not authenticate user'));
         }
-         return Response::make($response->toJson());
+         return $response->toJson();
     }
+    public function switchToRole() {
+        $input = Input::all();
+        $data = $input['data'];
 
+        $currentSession = new SessionManager();
+        $currentSession->reviveSessionFromCache();
+        $roleDto = $currentSession->user->roles()->getById($data['roleId']);
+        $currentSession->switchToRole($roleDto);
+
+    }
     public function refreshSession() {
         $currentSession = new SessionManager();
         $currentSession->reviveSessionFromCache();
@@ -38,12 +54,13 @@ class AuthenticationController extends BaseController {
     }
     public function createNewSession(SessionManager $SessionManager) {
 
-        //$SessionManager->cache->flush();
+        $SessionManager->cache->flush();
         $roleDto = $SessionManager->loadUser(Auth::user()->id);
         $SessionManager->loadAuthViews();
 //            $SessionManager->loadAuthorizations();
         $SessionManager->loadFeatureCodes();
         $SessionManager->loadFeatureFlips($roleDto);
+
         $SessionManager->switchToRole($roleDto);
         $SessionManager->saveSessionToCache();
         return $SessionManager;

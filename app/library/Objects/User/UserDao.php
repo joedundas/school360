@@ -81,18 +81,16 @@ class UserDao
     public function getCurrentSchoolId() {
         return $this->dto->getCurrentSchoolId();
     }
+    public function getCurrentSchoolDto() {
+        return $this->dto->schools->getById($this->getCurrentSchoolId());
+    }
     public function setRepository(UserRepository $repo) {
         $this->repository = $repo;
     }
     public function getRepository() {
         return $this->repository;
     }
-    public function setMapper(UserMapper $mapper) {
-        $this->mapper = $mapper;
-    }
-    public function getMapper() {
-        return $this->mapper;
-    }
+
     public function setDto(UserDto $dto) {
         $this->dto = $dto;
     }
