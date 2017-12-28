@@ -27,8 +27,19 @@ class ApiController extends BaseController {
         $PAGE = (new SessionManager())->reviveSessionFromCache();
         $this->setRoleId($PAGE->getCurrentRoleId());
         $this->setSchoolId($PAGE->getCurrentSchoolId());
-        $this->setLogging($PAGE->featureFlips->getFeatureFlipStatus('api:logging'));
+        $this->setLogging(
+            \Edu3Sixty\SettingsController::getStatus(
+                'api-logging',
+                Auth::user()->id,
+                $PAGE->getCurrentSchoolId(),
+                $PAGE->getCurrentRoleId()
+
+            )
+        );
     }
+
+
+
     public function getRoleId() {
         return $this->roleId;
     }

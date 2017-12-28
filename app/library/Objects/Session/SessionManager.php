@@ -155,13 +155,24 @@ class SessionManager
     public function reviveSessionFromCache() {
         $this->user->setDto(unserialize($this->cache->get('userDto')));
         $this->authViewsCollection = unserialize($this->cache->get('authViews'));
-        //$this->authorizations->setDto(unserialize($this->cache->get('authorizations')));
-        $this->featureFlipsCollection = unserialize($this->cache->get('featureFlips'));
-        $this->featureCodesCollection = unserialize($this->cache->get('featureCodes'));
         $this->setCurrentRoleId($this->cache->get('currentRoleId'));
         $this->setCurrentSchoolId($this->cache->get('currentSchoolId'));
+
+        $this->featureCodesCollection = unserialize($this->cache->get('featureCodes'));
         $this->featureFlips->setFeatureCodesCollection($this->featureCodesCollection);
+
+        $loadFeatureFlipsFromCache = \Edu3Sixty\SettingsController::getStatus('feature-flip-cache',$this->user->getUserId(),$this->getCurrentSchoolId(),$this->getCurrentRoleId());
+       // echo "++[" . $loadFeatureFlipsFromCache . "]++";
+        if($loadFeatureFlipsFromCache === 'on') {
+            $this->featureFlipsCollection = unserialize($this->cache->get('featureFlips'));
+        }
+        else {
+            $this->loadFeatureFlips($this->user->getCurrentRoleDto());
+        }
+
         $this->featureFlips->setFeatureFlipsCollection($this->featureFlipsCollection[$this->getCurrentSchoolId()]);
+
+        //$this->authorizations->setDto(unserialize($this->cache->get('authorizations')));
         return $this;
     }
 

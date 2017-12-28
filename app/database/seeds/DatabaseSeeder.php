@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder {
 		Eloquent::unguard();
 		//$this->call(SeedStatesUS::class);
         //$this->call(SeedTimezones::class);
-
+//        $this->call(SeedGlobalSettings::class);
         $this->call(SeedGradeLevels::class);
         $this->call(SeedCourses::class);
         $this->call(SeedFeatureCodes::class);

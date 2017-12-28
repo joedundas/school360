@@ -56,7 +56,8 @@ $PAGE = (new SessionManager())->reviveSessionFromCache();
 <body class="nav-md">
 
 <?php
-echo $PAGE->getCurrentSchoolId()  . "--- " . $PAGE->featureFlips->getFeatureFlipStatus('api:logging');
+//echo "---" . \Edu3Sixty\SettingsController::getStatus('force-logout',6,1,6);
+ //echo "||||" . $PAGE->getCurrentSchoolId()  . "--- " . $PAGE->featureFlips->getFeatureFlipStatus('schedule:menu');
 
        // var_dump($PAGE->featureFlips);
         ?>
