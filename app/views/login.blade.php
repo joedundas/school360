@@ -62,19 +62,19 @@
 	    if(current_fs_id == 'signIn') {
 			var email = $('#email').val().trim();
 			var password = $('#password').val().trim();
-            ajaxFeed(
-                {
-                    'url': 'login',
-                    'loader':'#msform',
-                    'stopSubsequentAttemptsUntilComplete':true,
-                    'data': {
-                        'email':email,
-						'password':password
-                    },
-                    'submitType': 'POST',
-                    'successCallback': receiveAuthentication
-                }
-            );
+//            ajaxFeed(
+//                {
+//                    'url': 'login',
+//                    'loader':'#msform',
+//                    'stopSubsequentAttemptsUntilComplete':true,
+//                    'data': {
+//                        'email':email,
+//						'password':password
+//                    },
+//                    'submitType': 'POST',
+//                    'successCallback': receiveAuthentication
+//                }
+//            );
 //            var validator = $("#msform").validate();
 //            if (validator.form()) {
 //               // createIniUser();

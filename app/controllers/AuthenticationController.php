@@ -51,6 +51,9 @@ class AuthenticationController extends BaseController {
 
         $SessionManager = $this->createNewSession(new SessionManager(new CacheController()));
         $SessionManager->switchToRole($currentRoleDto);
+        $response = DependencyInjection::ApiResponse();
+        $response->addPassback(array('a'=>'b'));
+        return $response;
     }
     public function createNewSession(SessionManager $SessionManager) {
 

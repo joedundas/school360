@@ -1,4 +1,13 @@
+
+function controller(pageController,sessionController) {
+
+    var me = this;
+    me.page = pageController;
+    me.session = sessionController;
+}
+
 function modalController() {
+    'use strict';
    var me = this;
 
     me.create = function(params) {
@@ -47,7 +56,7 @@ function modalController() {
         </div> \
         </div> \
         ';
-        //alert(divString);
+
         var $newdiv = $(divString).appendTo('body');
 
         $('#biz-modal-dialog').modal('show');
@@ -68,6 +77,7 @@ function modalController() {
 }
 
 function pageController(modalController,workingBlindController) {
+    'use strict';
     var me = this;
     me.modal = modalController;
     me.blind = workingBlindController;
@@ -96,33 +106,33 @@ function pageController(modalController,workingBlindController) {
             }, 1000);
         }
     };
-
-
-
 }
+
 function sessionController() {
+    'use strict';
     var me = this;
 
     me.refresh = function() {
-
-        ajaxFeed(
+        controller.page.ajax.send(
             {
-                'url': 'session/refresh',
-                'loader': {'attachTo':'body','showLoadingGif':true,'hideWhenComplete':false  },
-                'stopSubsequentAttemptsUntilComplete': true,
-                'data': {},
-                'submitType': 'POST',
-                'successCallback': controller.page.reload(1000),
+                url:'ajax/auth/refresh',
+                dataType:'json',
+                data:{},
+                loader:{
+                    hideOnComplete:false
+                },
+                callback: {
+                    'success':controller.page.reload(1000)
+                }
             }
         );
+
 
 
     };
     me.reloadPage = function() {
         setTimeout(function() {window.location.reload(true); },1000);
     };
-
-
 }
 
 function workingBlindController() {
@@ -184,6 +194,7 @@ function workingBlindController() {
                 alert("Had invalid input params... please handle this error?");
             }
         }
+
         var html = "<div class='blind' id='BBLIND'>";
         if(params.spinner.show) {
             html += "<div class='loader'></div>";
@@ -239,12 +250,7 @@ function workingBlindController() {
     };
 
 }
-function controller(pageController,sessionController) {
 
-    var me = this;
-    me.page = pageController;
-    me.session = sessionController;
-}
 
 
 function ajaxController() {
@@ -253,7 +259,7 @@ function ajaxController() {
     me.openChannels = {};
     me.defaults = function() {
         return {
-            'submitType':'GET',
+            'submitType':'POST',
             'dataType':'json',
             'url':'',
             'loader': {
@@ -316,7 +322,7 @@ function ajaxController() {
         var index = controller.page.helpers.randomString(8) + "-" + controller.page.helpers.timeStamp();
         me.openChannels[params.url][index] = { 'params':params,'received':false };
         if(params.loader !== false) {
-            controller.page.blind.show();
+            controller.page.blind.show(params.loader);
         }
         me.transmit(params.url,index);
     };
@@ -336,7 +342,8 @@ function ajaxController() {
             type: params.submitType,
             data: input,
             dataType: params.dataType,
-            success: function(response) {
+            success: function(response,textStatus,xhr) {
+                //if(xhr.status !== 200) { response = {}; response.output = {'data':'','hasErrors':false}; }
                 me.openChannels[url][index].received = response;
 
                 //@TODO We may want to put something here to check for concurrency on the openChannels queue
@@ -367,102 +374,6 @@ function ajaxController() {
     };
 
 }
-var _ajaxFeedWorkingProcesses = {};
-function ajaxFeed(params) {
-    var me = this;
-    var verbose = false;
-    /*
-     ** Pre-call defaults and functions
-     */
-    if(!('verbose' in params)) {
-        params.verbose = {};
-    }
-    if(params.verbose.showInputParams) {
-        alert("Input Parameters:" + JSON.stringify(params));
-    }
-
-    if(!'loader' in params) {
-        params.loader = false;
-
-    }
-    else if(params.loader !== false) {
-
-        showWorkingBlind(params.loader);
-    }
-
-    if(! 'passthru' in params) {
-        params.passthru = false;
-    }
-    if(!'stopSubsequentAttemptsUntilComplete' in params) {
-        params.stopSubsequentAttemptsUntilComplete = false;
-    }
-    if(
-        params.stopSubsequentAttemptsUntilComplete &&
-        params.url in _ajaxFeedWorkingProcesses &&
-        _ajaxFeedWorkingProcesses[params.url] == true
-    )
-    {
-        alert("Process has already started.. please wait until finished");
-        return 1;
-    }
-    _ajaxFeedWorkingProcesses[params.url] = true;
-
-
-    var input = {
-        'data': typeof params.data != 'undefined' ? params.data : {},
-        'sessionFlash': typeof params.sessionFlash != 'undefined' ? params.sessionFlash : {}
-    };
-
-    /*
-     **  Make the call
-     */
-    $.ajax({
-
-        url:params.url,
-        type: typeof params.submitType != 'undefined' ? params.submitType : 'GET',
-        data: input,
-        dataType: typeof params.dataType != 'undefined' ? params.dataType : 'json',
-        success: function(data) {
-            alert(JSON.stringify(data));
-            delete _ajaxFeedWorkingProcesses[params.url];
-            if(params.verbose.showSuccessData) {
-                alert("Success Data: " + JSON.stringify(data));
-            }
-            if(typeof params.successCallback == 'function') {
-                params.successCallback(data,params.passthru);
-            }
-            if(params.loader !== false  && me.getParameterValue(params.loader,'hideWhenComplete',true)) {
-                hideWorkingBlind();
-            }
-
-
-        },
-        error:function(xhr, ajaxOptions, thrownError) {
-            alert(JSON.stringify(xhr.responseText));
-            delete _ajaxFeedWorkingProcesses[params.url];
-            if(params.verbose.showError) {
-                alert("Error: " + JSON.stringify(xhr.responseText));
-            }
-            if(typeof params.failureCallback == 'function') {
-                params.failureCallback(e);
-            }
-            if(params.loader !== false && me.getParameterValue(params.loader,'hideWhenComplete',true) ) {
-                hideWorkingBlind();
-            }
-
-
-        }
-    });
-    me.getParameterValue = function(params,key,defaultValue) {
-
-        if(typeof params[key] !== 'undefined') {
-
-           return params[key];
-        }
-
-        return defaultValue;
-    };
-}
 
 function helpers() {
     "use strict";
@@ -483,50 +394,3 @@ function helpers() {
 
 }
 
-function showWorkingBlind(params) {
-    var div_id = params.attachTo;
-
-    var showLoadingGif = true;
-    var callback = false;
-    var fadeIn = true;
-    if(typeof params != 'undefined') {
-        if(typeof params.showLoadingGif) {
-            showLoadingGif = params.showLoadingGif;
-        }
-        if(typeof params.callback != 'undefined') {
-            callback = params.callback;
-        }
-        if(typeof params.fade != 'undefined') {
-            fadeIn = params.fade;
-        }
-    }
-    var html = "<div class='blind' id='BIZBLIND'>";
-
-    if(showLoadingGif) {
-        html += "<div class='loader'></div>";
-    }
-    html += "</div>";
-
-    $(div_id).append(html);
-    $('#BIZBLIND').css('opacity',.6);
-    $('#BIZBLIND').css('z-index',100000);
-    if(fadeIn) {
-        $('#BIZBLIND').fadeIn('slow',function() {
-            if(typeof callback == 'function') {
-                callback();
-            }
-        });
-    }
-    else {
-        $('#BIZBLIND').show(0, function () {
-            if (typeof callback == 'function') {
-                callback();
-            }
-        });
-    }
-
-
-}
-function hideWorkingBlind(callback) {
-    $('#BIZBLIND').remove();
-}

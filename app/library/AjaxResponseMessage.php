@@ -12,6 +12,11 @@ class AjaxResponseMessage
     {
 
     }
+    public function __toString()
+    {
+       return $this->toJson();
+    }
+
     public function asArray() {
         return array(
             'error'=>$this->inError(),

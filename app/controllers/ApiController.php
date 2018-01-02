@@ -16,12 +16,16 @@ class ApiController extends BaseController {
     protected $logId;
     protected $roleId;
     protected $schoolId;
+    protected $class;
+    protected $method;
     protected $logging = 'off';
 
-    public function __construct($route,$input) {
+    // shortClass and shortMethod are short names.  The mapping to a class and method is done using the configs
+    //  in the setRoute method.
+    public function __construct($shortClass,$shortMethod,$input) {
         $this->setClientDiagnostics($input['diagnostics']);
         $this->setReceivedTime();
-        $this->setRoute($route);
+        $this->setRoute($shortClass,$shortMethod);
         $this->setInput($input);
 
         $PAGE = (new SessionManager())->reviveSessionFromCache();
@@ -69,9 +73,9 @@ class ApiController extends BaseController {
         return $this->toJson();
     }
     private function callRoute() {
-        $route = $this->getRoute();
-        $class = new $route['class']();
-        $method = $route['method'];
+        $callClass = $this->getClass();
+        $class = new $callClass();
+        $method = $this->getMethod();
         $input = $this->getInput();
         $this->setClientSideCallInformation($input['call']);
         return $class->$method($this->getData());
@@ -81,8 +85,8 @@ class ApiController extends BaseController {
         $callRecord = new ApiCalls();
         $callRecord->userId = Auth::user()->id;
         $callRecord->information = base64_encode($this->toJson());
-        $callRecord->routeClass = $route['class'];
-        $callRecord->routeMethod = $route['method'];
+        $callRecord->routeClass = $this->getClass();
+        $callRecord->routeMethod = $this->getMethod();
         $callRecord->roleId = $this->getRoleId();
         $callRecord->schoolId = $this->getSchoolId();
         $callRecord->save();
@@ -105,7 +109,7 @@ class ApiController extends BaseController {
             ),
             'callId'=>$this->getClientSideCallInformation(),
             'input'=>$this->getInput(),
-            'route'=>$this->getRoute(true),
+            'route'=>$this->getRoute(),
             'output'=>array(
                 'data'=>$this->getResponse('passback'),
                 'hasErrors'=>$this->getResponse('error'),
@@ -126,13 +130,7 @@ class ApiController extends BaseController {
     public function getClientDiagnostics() {
         return $this->clientDiagnostics;
     }
-    private function parseRouteFromString($route) {
-        $rt = explode('@',$route);
-        return array(
-            'class'=>$rt[0],
-            'method'=>$rt[1]
-        );
-    }
+
     private function setLogId($logId) {
         $this->logId = $logId;
     }
@@ -140,14 +138,26 @@ class ApiController extends BaseController {
         return $this->logId;
     }
     public function getRoute($asString = false) {
-        if($asString) {
-            $route = $this->route;
-            return $route['class'] . "@" . $route['method'];
-        }
         return $this->route;
     }
-    public function setRoute($route) {
-        $this->route = $this->parseRouteFromString($route);
+    public function setRoute($shortClass,$shortMethod) {
+        $this->route = $shortClass . '@' . $shortMethod; //$this->parseRouteFromString($route);
+        $callTo = RouteMapper::getAjaxRouteClassAndMethodFromShortName($shortClass,$shortMethod);
+
+        $this->setClass($callTo['class']);
+        $this->setMethod($callTo['method']);
+    }
+    public function setClass($class) {
+        $this->class = $class;
+    }
+    public function setMethod($method) {
+        $this->method = $method;
+    }
+    public function getClass() {
+        return $this->class;
+    }
+    public function getMethod() {
+        return $this->method;
     }
     public function getInput() {
         return $this->input;
@@ -155,7 +165,12 @@ class ApiController extends BaseController {
 
     public function setInput($input) {
         $this->input = $input;
-        $this->setData($input['data']);
+        if(array_key_exists('data',$input)) {
+            $this->setData($input['data']);
+        }
+        else {
+            $this->setData(array());
+        }
     }
     public function setData($data) {
         $this->data = $data;

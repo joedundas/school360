@@ -58,7 +58,7 @@ $PAGE = (new SessionManager())->reviveSessionFromCache();
 <?php
 //echo "---" . \Edu3Sixty\SettingsController::getStatus('force-logout',6,1,6);
  //echo "||||" . $PAGE->getCurrentSchoolId()  . "--- " . $PAGE->featureFlips->getFeatureFlipStatus('schedule:menu');
-
+//echo Config::get('ajax-routes.auth.class');
        // var_dump($PAGE->featureFlips);
         ?>
 
@@ -120,39 +120,21 @@ $PAGE = (new SessionManager())->reviveSessionFromCache();
 
 <script>
 function receiveTestResults(dta) {
-   // alert(JSON.stringify(dta));
+    alert(JSON.stringify(dta));
 }
 $(document).ready(function() {
 
     controller.page.ajax.send(
         {
-          url:'api/test',
-            data:{'hello':'dolly'},
+          url:'ajax/auth/test',
+            data:{},
             'callback': {
               'success':receiveTestResults
             }
         }
     );
 
-//    controller.page.ajax.send(
-//        {
-//            url:'test2',
-//            'callback': {
-//                'success':receiveTestResults
-//            }
-//        }
-//    );
-//
-//
-//
-//    controller.page.ajax.send(
-//        {
-//            url:'test2',
-//            'callback': {
-//                'success':receiveTestResults
-//            }
-//        }
-//    );
+
 //    setTimeout(function() {
 //        controller.page.ajax.send(
 //            {

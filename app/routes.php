@@ -33,11 +33,17 @@ Route::match(array('GET','POST'),'modal/{view}','ModalViewController@getModalVie
 //    return View::make($bladeFile);
 //}));
 //
-Route::match(array('GET','POST'),'api/test',array('before'=>'auth', function() {
-    $api = new ApiController('AuthenticationController@tester',Input::all());
-    return $api->call();
-    //return $api->call((new AuthenticationController())->tester());
+
+
+Route::match(array('GET','POST'),'api/{class}/{method}',array('before'=>'auth', function($class,$method) {
+    return (new ApiController($class,$method,Input::all()))->call();
 }));
+Route::match(array('GET','POST'),'ajax/{class}/{method}',array('before'=>'auth', function($class,$method) {
+    return (new ApiController($class,$method,Input::all()))->call();
+}));
+//Route::match(array('GET','POST'),'api/test',array('before'=>'auth', function() {
+//    return (new ApiController('AuthenticationController@tester',Input::all()))->call();
+//}));
 //
 //
 //
