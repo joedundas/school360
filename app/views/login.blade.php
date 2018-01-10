@@ -8,6 +8,20 @@
 	)
 	<link rel="stylesheet" href="css/registration.css">
 </head>
+
+<script>
+    var controller = new controller(
+        new pageController(
+            new modalController(),
+            new workingBlindController()
+        ),
+        new sessionController()
+    );
+
+    var ajax = new ajaxController();
+
+
+</script>
 <body>
 
 
@@ -62,6 +76,21 @@
 	    if(current_fs_id == 'signIn') {
 			var email = $('#email').val().trim();
 			var password = $('#password').val().trim();
+
+
+
+            controller.page.ajax.send(
+                {
+                    url:'ajax/auth/login',
+                    data:{
+                        'email':email,
+						'password':password
+					},
+                    'callback': {
+                        'success':receiveAuthentication
+                    }
+                }
+            );
 //            ajaxFeed(
 //                {
 //                    'url': 'login',
@@ -91,7 +120,7 @@
 
 	function receiveAuthentication(data) {
 	    alert(JSON.stringify(data));
-	    if(data.error) {
+	    if(data.hasErrors) {
 	        alert("NO way dude!!");
 			return 1;
 		}

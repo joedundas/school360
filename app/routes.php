@@ -19,7 +19,11 @@ Route::match(array('GET','POST'),'dashboard',array('before'=>'auth',function() {
     return View::make($bladeFile);
 }));
 
-Route::match(array('GET','POST'),'modal/{view}','ModalViewController@getModalView');
+Route::match(array('GET','POST'),'modal/{view}',array('before'=>'auth', function($view) {
+    //$data = (new ModalViewController)->getModalView($view);
+    return (new ModalViewController)->getModalView($view); //(new ApiController($class,$method,Input::all()))->call();
+}));
+//'ModalViewController@getModalView');
 
 //
 //Route::match(array('GET','POST'),'modal/{view}','ModalViewController@getModalView');
@@ -35,10 +39,13 @@ Route::match(array('GET','POST'),'modal/{view}','ModalViewController@getModalVie
 //
 
 
-Route::match(array('GET','POST'),'api/{class}/{method}',array('before'=>'auth', function($class,$method) {
+Route::match(array('GET','POST'),'secure/api/{class}/{method}',array('before'=>'auth', function($class,$method) {
     return (new ApiController($class,$method,Input::all()))->call();
 }));
-Route::match(array('GET','POST'),'ajax/{class}/{method}',array('before'=>'auth', function($class,$method) {
+Route::match(array('GET','POST'),'api/{class}/{method}',array(function($class,$method) {
+    return (new ApiController($class,$method,Input::all()))->call();
+}));
+Route::match(array('GET','POST'),'ajax/{class}/{method}',array(function($class,$method) {
     return (new ApiController($class,$method,Input::all()))->call();
 }));
 //Route::match(array('GET','POST'),'api/test',array('before'=>'auth', function() {

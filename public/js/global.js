@@ -12,29 +12,28 @@ function modalController() {
 
     me.create = function(params) {
 
-        if(typeof params.view == 'undefined' || params.view == '') {
-            exceptionHandler({
-                message:'View must be defined for the modal'
-            });
+        if(typeof params.view === 'undefined' || params.view === '') {
+
             return 1;
         }
-        if(typeof params.postData == 'undefined' || params.postData == '') {
+        if(typeof params.postData === 'undefined' || params.postData === '') {
             params.postData = {};
         }
-        ajaxFeed(
-            {
-                'url': params.view,
-                'loader':'body',
-                'stopSubsequentAttemptsUntilComplete':true,
-                'data': params.postData,
-                'submitType': 'POST',
-                'successCallback': me.display
-            }
-        );
+        controller.page.ajax.send(
+           {
+             url:params.view,
+               data:params.postData,
+               callback: {
+                 success: function(response,textStatus,xhr) {
+                     alert(JSON.stringify(xhr));
+                 }
+               }
+           }
+       );
     }
 
     me.display = function(params) {
-
+        alert(JSON.stringify(params));
         var modalSize = params.passback.width;
         var divString = '\
         <div class="modal fade bs-example-modal-' + modalSize + '" tabindex="-1" role="dialog" aria-hidden="true" id="biz-modal-dialog"> \
@@ -344,18 +343,23 @@ function ajaxController() {
             dataType: params.dataType,
             success: function(response,textStatus,xhr) {
                 //if(xhr.status !== 200) { response = {}; response.output = {'data':'','hasErrors':false}; }
+                // alert("in success");
+                // alert(JSON.stringify(response));
                 me.openChannels[url][index].received = response;
 
                 //@TODO We may want to put something here to check for concurrency on the openChannels queue
                 if(params.verbose.showSuccessData) {
                     alert("Success Data: " + JSON.stringify(response));
                 }
+
                 if(response.output.hasErrors) {
                     alert("Call worked, but there were errors from call.. need to handle");
+                    // response.output.errors is array of error messages that can be used here
                 }
-                if(typeof params.callback.success === 'function') {
-                    params.callback.success(response.output.data,params.passthru);
+                else if(typeof params.callback.success === 'function') {
+                    params.callback.success(response.output,params.passthru);
                 }
+
                 controller.page.blind.hide();
             },
             error:function(xhr, ajaxOptions, thrownError) {

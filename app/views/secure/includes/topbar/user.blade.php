@@ -15,7 +15,7 @@
         <li><a href="javascript">Help</a></li>
         @if($PAGE->user->roles()->count() > 1)
             <li>
-                <a onclick="controller.modals.create({'view':'modal/roles-list'})">
+                <a onclick="controller.page.modal.create({'view':'modal/roles-list'})">
                     <span class="badge bg-red pull-right">{{ $PAGE->user->roles()->count() }}</span>
                     <span>Switch Account/Role</span>
                 </a>

@@ -120,14 +120,14 @@ $PAGE = (new SessionManager())->reviveSessionFromCache();
 
 <script>
 function receiveTestResults(dta) {
-    alert(JSON.stringify(dta));
+   alert(JSON.stringify(dta));
 }
 $(document).ready(function() {
 
     controller.page.ajax.send(
         {
           url:'ajax/auth/test',
-            data:{},
+            data:{'a':'b'},
             'callback': {
               'success':receiveTestResults
             }

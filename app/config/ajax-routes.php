@@ -9,6 +9,9 @@ return [
             ],
             'refresh'=>[
                 'method'=>'refreshSession'
+            ],
+            'login'=>[
+                'method'=>'login'
             ]
         ]
     ],

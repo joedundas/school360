@@ -8,31 +8,29 @@ class AuthenticationController extends BaseController {
 
     }
 
-    public function tester(array $input) {
-
-        $response = DependencyInjection::ApiResponse();
-        $response->addPassback($input);
-        return $response;
-
+    public function tester(DataTransferPacketInterface $packet) {
+            return array();
     }
-    public function login() {
-        $response = DependencyInjection::ApiResponse();
+    public function login(DataTransferPacketInterface $packet) {
+        $input = $packet->getInputData();
+       // $response = DependencyInjection::DataTransferPacket();
         $userdata = array(
-            'email'=>Input::get('data.email'),
-            'password'=>Input::get('data.password'),
+            'email'=>$input['email'],
+            'password'=>$input['password'],
             'canLogin'=>'Y'
         );
+        $packet->removeInputByKey('password');
         Session::flush();
         if(Auth::attempt($userdata)) {
-
             $this->createNewSession(
                 new SessionManager(new CacheController())
             );
         }
         else {
-            $response->insertGlobalErrors(array('Could not authenticate user'));
+            $packet->addError('Could not authenticate user','server');
         }
-         return $response->toJson();
+        return array();
+
     }
     public function switchToRole() {
         $input = Input::all();
@@ -51,7 +49,7 @@ class AuthenticationController extends BaseController {
 
         $SessionManager = $this->createNewSession(new SessionManager(new CacheController()));
         $SessionManager->switchToRole($currentRoleDto);
-        $response = DependencyInjection::ApiResponse();
+        $response = DependencyInjection::DataTransferPacket();
         $response->addPassback(array('a'=>'b'));
         return $response;
     }

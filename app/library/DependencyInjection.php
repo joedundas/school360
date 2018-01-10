@@ -12,9 +12,9 @@ abstract class DependencyInjection
 
 
 
-    static public function ApiResponse($param = '') {
+    static public function DataTransferPacket($param = '') {
         if($param == '' || $param == 'default') {
-            return new AjaxResponseMessage();
+            return new DataTransferPacket();
         }
     }
 }

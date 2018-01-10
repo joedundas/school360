@@ -235,7 +235,7 @@ class ComposerStaticInit0e37c4e45dcbd7fa3c9afcd7c73563f2
         'AbstractFeaturesRepository' => __DIR__ . '/../..' . '/app/library/Repositories/Features/AbstractFeaturesRepository.php',
         'AbstractRepository' => __DIR__ . '/../..',
         'AddressValueObject' => __DIR__ . '/../..' . '/app/library/ValueObjects/AddressValueObject.php',
-        'AjaxResponseMessage' => __DIR__ . '/../..' . '/app/library/AjaxResponseMessage.php',
+        'DataTransferPacket' => __DIR__ . '/../..' . '/app/library/AjaxResponseMessage.php',
         'AuthViewDao' => __DIR__ . '/../..',
         'AuthViewDto' => __DIR__ . '/../..',
         'AuthViewRepository' => __DIR__ . '/../..',
