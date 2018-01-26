@@ -22,10 +22,13 @@ class SessionManager
     public $featureCodesCollection;
     public $featureFlipsCollection = array(); // array of collections hashed by school ID
 
+    public $authorizationCodesCollection;
+    public $authorizationsCollection = array();  // array of collections hashed by role ID
+
     // Repositories
     private $authViewsRepository;
     private $featureRepository;
-
+    private $authorizationsRepository;
 
 
     public function switchToRole(RoleDto $roleDto) {
@@ -38,6 +41,8 @@ class SessionManager
         $this->loadFeatureFlips($roleDto,true);
       //  echo "setting feature flips collection to school ID [" . $schoolId . "]]";
        $this->featureFlips->setFeatureFlipsCollection($this->featureFlipsCollection[$schoolId]);
+
+
    //     var_dump($this->featureFlipsCollection[$schoolId]);
 
         $this->saveSessionToCache();
@@ -53,11 +58,13 @@ class SessionManager
         $this->authorizationsDao = new AuthorizationDao();
         $this->featureFlips = new FeatureFlipDao();
         $this->featureCodesCollection = new FeatureCodesCollection();
+        $this->authorizationCodesCollection = new AuthorizationsCollection();
 
         $this->authViewsCollection = new AuthViewCollection();
 
         $this->authViewsRepository = new AuthViewRepository();
         $this->featureRepository = new FeatureRepository();
+        $this->authorizationsRepository = new AuthorizationRepository();
 
     }
 
@@ -83,11 +90,24 @@ class SessionManager
             $this->authViewsCollection->add($dto);
         }
     }
-    public function loadAuthorizations() {
-        $userId = $this->user->getUserId();
-        if(!$userId || ! ($userId > 0)) {
-            throw new Exception('Session Manage cannot initate authorizations without a user ID');
+    public function loadAuthorizations(RoleDto $role, $forceReload = false) {
+        $roleId = $role->getRoleId();
+        if(!is_int($roleId)) {
+            throw new Exception('Must supply a valid role ID to load authorizations');
         }
+        if($forceReload || !array_key_exists($roleId,$this->authorizationsCollection)) {
+            $this->loadRolesAuthorizations($roleId);
+        }
+    }
+    public function loadAuthorizationCodes() {
+        $this->authorizationCodesCollection->reset();
+        $authCodes = $this->authorizationsRepository->getAuthorizationCodes();
+        foreach($authCodes as $idx=>$authCode) {
+            $dto = new AuthorizationCodeDto();
+            AuthorizationHydrator::hydrateAuthorizationDtoFromTypesDB($dto,$authCode);
+            $this->authorizationCodesCollection->add($dto);
+        }
+        $this->authorizationCodesCollection->setAuthsLoaded(true);
     }
     public function loadFeatureCodes() {
         $this->featureCodesCollection->reset();
@@ -113,7 +133,23 @@ class SessionManager
         }
 
     }
+    public function loadRolesAuthorizations($roleId) {
+        if(! $this->authorizationCodesCollection->isAuthsLoaded()) {
+            throw new Exception('Trying to load authorizations for role prior to loading authorization codes');
+        }
 
+        $collection = new RoleAuthorizationsCollection();
+        $authorizations = $this->authorizationsRepository->getRoleSpecificAuthorizations($roleId);
+
+        foreach($authorizations as $idx=>$authorization) {
+            $dto = new AuthorizationCodeRoleSpecificDto();
+            AuthorizationHydrator::hydrateAuthorizationRoleSpecificDtoFromDB($dto,$authorization);
+            $collection->add($dto);
+        }
+        $collection->setRoleAuthorizationsLoaded(true);
+        $collection->setRoleId($roleId);
+        $this->authorizationsCollection[$roleId] = $collection;
+    }
 
     public function loadSchoolsFeatureFlips($schoolId) {
 
@@ -146,6 +182,8 @@ class SessionManager
             'currentSchoolId'=>$this->getCurrentSchoolId(),
             'userDto'=>serialize($this->user->getDto()),
             'authViews'=>serialize($this->authViewsCollection),
+           'authorizationCodes'=>serialize($this->authorizationCodesCollection),
+           'authorizations'=>serialize($this->authorizationsCollection),
            // 'authorizations'=>serialize($this->authorizations),
             'featureFlips'=>serialize($this->featureFlipsCollection),
             'featureCodes'=>serialize($this->featureCodesCollection)
@@ -162,7 +200,6 @@ class SessionManager
         $this->featureFlips->setFeatureCodesCollection($this->featureCodesCollection);
 
         $loadFeatureFlipsFromCache = \Edu3Sixty\SettingsController::getStatus('feature-flip-cache',$this->user->getUserId(),$this->getCurrentSchoolId(),$this->getCurrentRoleId());
-       // echo "++[" . $loadFeatureFlipsFromCache . "]++";
         if($loadFeatureFlipsFromCache === 'on') {
             $this->featureFlipsCollection = unserialize($this->cache->get('featureFlips'));
         }
@@ -172,6 +209,7 @@ class SessionManager
 
         $this->featureFlips->setFeatureFlipsCollection($this->featureFlipsCollection[$this->getCurrentSchoolId()]);
 
+        $this->authorizationCodesCollection = unserialize($this->cache->get('authorizationCodes'));
         //$this->authorizations->setDto(unserialize($this->cache->get('authorizations')));
         return $this;
     }

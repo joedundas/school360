@@ -15,9 +15,16 @@ class ModalViewController extends BaseController {
         }
         $vw = $vw->first();
 
-  //      $response = DependencyInjection::ApiResponse();
         $html = View::make($vw->view);
 
+        $packet = DependencyInjection::DataTransferPacket();
+        $packet->setResults(
+            array(
+                'html'=> $html->render(),
+                'width'=>$vw->width,
+                'title'=>$vw->title
+            )
+        );
 //        $response->addPassback(
 //            array(
 //                'html'=> $html->render(),
@@ -25,17 +32,15 @@ class ModalViewController extends BaseController {
 //                'title'=>$vw->title
 //            )
 //        );
-        $sendBack = array(
-            'output'=>array(
-                'html'=> $html->render(),
-                'width'=>$vw->width,
-                'title'=>$vw->title
-            )
-        );
+//        $sendBack = array(
+//            'output'=>array(
+//                'html'=> $html->render(),
+//                'width'=>$vw->width,
+//                'title'=>$vw->title
+//            )
+//        );
 
-        //var_dump(json_encode($sendBack));
-        return Response::make($sendBack);
-
+        return $packet->toJson();
     }
 
 

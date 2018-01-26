@@ -9,52 +9,57 @@ function controller(pageController,sessionController) {
 function modalController() {
     'use strict';
    var me = this;
-
-    me.create = function(params) {
-
-        if(typeof params.view === 'undefined' || params.view === '') {
-
+    me.params;
+    me.defaults = function() {
+        return {
+            view:'',
+            postData:{},
+            showCloseButton:true,
+            showSaveButton:true
+        };
+    }
+    me.create = function(input) {
+        me.params = controller.page.helpers.loadInputParams(me.defaults(),input);
+        if(typeof me.params.view === 'undefined' || me.params.view === '') {
             return 1;
-        }
-        if(typeof params.postData === 'undefined' || params.postData === '') {
-            params.postData = {};
         }
         controller.page.ajax.send(
            {
-             url:params.view,
-               data:params.postData,
+             url:me.params.view,
+               data:me.params.postData,
                callback: {
-                 success: function(response,textStatus,xhr) {
-                     alert(JSON.stringify(xhr));
+                 success: function(response) {
+                     me.display(response.results);
                  }
                }
            }
        );
     }
 
-    me.display = function(params) {
-        alert(JSON.stringify(params));
-        var modalSize = params.passback.width;
-        var divString = '\
-        <div class="modal fade bs-example-modal-' + modalSize + '" tabindex="-1" role="dialog" aria-hidden="true" id="biz-modal-dialog"> \
-                    <div class="modal-dialog modal-' + modalSize + '"> \
-            <div class="modal-content"> \
-            <div class="modal-header"> \
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> \
-        </button> \
-        <h4 class="modal-title" id="bizModalLabel">' + params.passback.title + '</h4>\
-        </div>\
-        <div class="modal-body"> \
-        ' + params.passback.html + '\
-        </div> \
-        <div class="modal-footer"> \
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> \
-            <button type="button" class="btn btn-primary" id="biz-modal-save-button">Save changes</button> \
-        </div> \
-        </div> \
-        </div> \
-        </div> \
-        ';
+    me.display = function(data) {
+        var modalSize = data.width;
+        var divString = '' +
+        '<div class="modal fade bs-example-modal-' + modalSize + '" tabindex="-1" role="dialog" aria-hidden="true" id="biz-modal-dialog">' +
+            '<div class="modal-dialog modal-' + modalSize + '">' +
+                '<div class="modal-content">' +
+                '<div class="modal-header">' +
+                    '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>' +
+                    '<h4 class="modal-title" id="bizModalLabel">' + data.title + '</h4>' +
+                '</div>' +
+                '<div class="modal-body">' + data.html + '</div>' +
+                ' <div class="modal-footer"> ';
+                     if(me.params.showCloseButton) {
+                         divString += '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
+                     }
+                     if(me.params.showSaveButton) {
+                         divString += '<button type="button" class="btn btn-primary" id="biz-modal-save-button">Save changes</button>';
+                     }
+
+        divString += '' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
 
         var $newdiv = $(divString).appendTo('body');
 
@@ -83,17 +88,20 @@ function pageController(modalController,workingBlindController) {
     me.ajax = new ajaxController();
     me.helpers = new helpers();
     me.switchToRole = function(roleId) {
-
-        ajaxFeed(
+        controller.page.ajax.send(
             {
-                'url': 'switchRole',
-                'loader': {'attachTo':'body','showLoadingGif':true,'hideWhenComplete':false  },
-                'stopSubsequentAttemptsUntilComplete': true,
-                'data': {'roleId':roleId},
-                'submitType': 'POST',
-                'successCallback': me.reload(),
-            }
-        );
+                url:'secure/api/auth/change-role',
+                data:{'roleId':roleId},
+                loader:{
+                    hideOnComplete:false
+                },
+                callback: {
+                    success: function(response) {
+                        me.reload();
+                    }
+                }
+            });
+
     }
     me.reload = function(waitTime) {
         if(typeof waitTime === 'undefined') {
@@ -114,7 +122,7 @@ function sessionController() {
     me.refresh = function() {
         controller.page.ajax.send(
             {
-                url:'ajax/auth/refresh',
+                url:'secure/api/auth/refresh',
                 dataType:'json',
                 data:{},
                 loader:{
@@ -164,32 +172,12 @@ function workingBlindController() {
             }
         };
     };
-    me.loadInputParams = function(params,input) {
-        for(var key in input) {
-            if (typeof input[key] === 'object') {
-                me.loadInputParams(params[key], input[key]);
-                delete input[key];
-            }
-            else {
-                params[key] = input[key];
-                delete input[key];
-            }
-        }
-    };
-    me.hasInvalidInputParams = function(input) {
-        for(var key in input) {
-            if(input.hasOwnPropery(key)) {
-                return true;
-            }
-        }
-        return false;
-    };
+
     me.show = function(input) {
         var params = me.defaults();
         if(typeof input !== 'undefined') {
-            me.loadInputParams(params, input);
-
-            if (me.hasInvalidInputParams(input)) {
+            params = controller.page.helpers.loadInputParams(params, input);
+            if(! controller.page.helpers.objectIsEmpty(input)) {
                 alert("Had invalid input params... please handle this error?");
             }
         }
@@ -290,21 +278,9 @@ function ajaxController() {
             }
         };
     };
-    me.loadInputParams = function(params,input) {
-        for(var key in input) {
-            if (typeof input[key] === 'object') {
-                me.loadInputParams(params[key], input[key]);
-                delete input[key];
-            }
-            else {
-                params[key] = input[key];
-                delete input[key];
-            }
-        }
-    };
+
     me.send = function(input) {
-        var params = me.defaults();
-        me.loadInputParams(params,input);
+        var params = controller.page.helpers.loadInputParams(me.defaults(),input);
 
         if(
             params.blockUntilDone &&
@@ -343,8 +319,7 @@ function ajaxController() {
             dataType: params.dataType,
             success: function(response,textStatus,xhr) {
                 //if(xhr.status !== 200) { response = {}; response.output = {'data':'','hasErrors':false}; }
-                // alert("in success");
-                // alert(JSON.stringify(response));
+
                 me.openChannels[url][index].received = response;
 
                 //@TODO We may want to put something here to check for concurrency on the openChannels queue
@@ -394,6 +369,30 @@ function helpers() {
 
     me.timeStamp = function() {
         return Math.floor(Date.now()/1000);
+    };
+
+    me.loadInputParams = function(params,input) {
+        var newParams = params;
+        for(var key in input) {
+            if (typeof input[key] === 'object') {
+                me.loadInputParams(params[key], input[key]);
+                delete input[key];
+            }
+            else {
+                params[key] = input[key];
+                delete input[key];
+            }
+        }
+        return params;
+    };
+
+    me.objectIsEmpty = function(input) {
+        for(var key in input) {
+            if(input.hasOwnPropery(key)) {
+                return false;
+            }
+        }
+        return true;
     };
 
 }

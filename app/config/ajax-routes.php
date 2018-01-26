@@ -5,13 +5,28 @@ return [
        'class'=>'AuthenticationController',
         'calls'=>[
             'test'=>[
-                'method'=>'tester'
+                'method'=>'tester',
+                'requires'=>array(
+                    'auth'=>true
+                )
             ],
             'refresh'=>[
-                'method'=>'refreshSession'
+                'method'=>'tester',
+                'requires'=>array(
+                    'auth'=>true
+                )
             ],
             'login'=>[
-                'method'=>'login'
+                'method'=>'login',
+                'requires'=>array(
+                    'auth'=>false
+                )
+            ],
+            'change-role'=>[
+                'method'=>'switchToRole',
+                'requires'=>array(
+                    'auth'=>true
+                )
             ]
         ]
     ],

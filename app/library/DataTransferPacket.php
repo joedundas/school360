@@ -34,24 +34,46 @@ class DataTransferPacket implements DataTransferPacketInterface
         'clientSideId'=>''
     );
     protected $logId = null;
+    protected $routeRequiresAuth = null;
 
 
 
-    public function loadFromReceivedAjaxCall($input,$shortClass,$shortMethod,$authenticated = true) {
-        $this->setInputData($input['data']);
-
-        if($authenticated) {
-            $this->loadUserInformationFromCache();
-        }
-
-        $this->setClientSentTime($input['diagnostics']['time']['local']['sent']);
-        $this->setServerReceivedTime();
+    public function loadFromReceivedAjaxCall($input,$shortClass,$shortMethod) {
+        $this->setInputData(array_key_exists('data',$input) ? $input['data'] : array());
 
         $this->setUrl($shortClass . '@' . $shortMethod); // = $shortClass . '@' . $shortMethod; //$this->parseRouteFromString($route);
         $callTo = RouteMapper::getAjaxRouteClassAndMethodFromShortName($shortClass,$shortMethod);
         $this->setRoute($callTo['class'],$callTo['method']);
+        $this->setRouteRequiresAuth($callTo['requiresAuth']);
+
+        if(!Auth::check()) { // user is not logged in
+            if($this->doesRouteRequireAuth()) {
+                throw new Exception('Route requires authentication');
+            }
+        }
+        else {
+            if($this->doesRouteRequireAuth()) {
+                $this->loadUserInformationFromCache();
+            }
+        }
+
+        $this->setClientSentTime($input['diagnostics']['time']['local']['sent']);
+        $this->setServerReceivedTime();
         $this->setClientSideId($input['call']['id']);
+
         if(array_key_exists('passback',$input)) { $this->addPassback($input['passback']); }
+    }
+    public function setRouteRequiresAuth($value) {
+        if(!is_bool($value)) {
+            throw new Exception('setRouteRequiresAuth requires a boolean input value');
+        }
+        $this->routeRequiresAuth = $value;
+    }
+    public function doesRouteRequireAuth() {
+        if(is_null($this->routeRequiresAuth)) {
+            throw new Exception('Checked if route requires auth before it was set');
+        }
+        return $this->routeRequiresAuth;
     }
     public function getRoute() {
         return $this->callInformation['route'];
@@ -218,10 +240,10 @@ class DataTransferPacket implements DataTransferPacketInterface
         $this->setDiagnosticTime('server','sent',$time);
     }
     public function setClientSentTime($time = false) {
-        $this->setDiagnosticTime('client','sent',$time);
+        $this->setDiagnosticTime('client','sent',strtotime($time));
     }
     public function setClientReceivedTime($time = false) {
-        $this->setDiagnosticTime('client','received',$time);
+        $this->setDiagnosticTime('client','received',strtotime($time));
     }
     private function setDiagnosticTime($side,$end,$time = false) {
         if($time === false) {

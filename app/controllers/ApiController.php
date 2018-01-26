@@ -11,13 +11,8 @@ class ApiController extends BaseController {
 
     // shortClass and shortMethod are short names.  The mapping to a class and method is done using the configs
     //  in the setRoute method.
-    public function __construct($shortClass,$shortMethod,$input) {
-
-
-        $this->packet = DependencyInjection::DataTransferPacket();
-        $this->packet->loadFromReceivedAjaxCall($input,$shortClass,$shortMethod,false);
-
-
+    public function __construct(DataTransferPacketInterface $packet) {
+        $this->packet = $packet;
         $this->setLogging(
             \Edu3Sixty\SettingsController::getStatus(
                 'api-logging',
@@ -28,16 +23,13 @@ class ApiController extends BaseController {
             )
         );
     }
-
     public function getLogging() {
         return $this->logging;
     }
     public function setLogging($onOrOff) {
         $this->logging = $onOrOff;
     }
-
     public function call() {
-
         $this->packet->setResults($this->callRoute());
         if($this->getLogging() === 'on') {
             $this->packet->log();
@@ -51,8 +43,4 @@ class ApiController extends BaseController {
         $method = $this->packet->getMethod();
         return $class->$method($this->packet);
     }
-
-
-
-
 }

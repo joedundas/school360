@@ -13,7 +13,7 @@ class AuthenticationController extends BaseController {
     }
     public function login(DataTransferPacketInterface $packet) {
         $input = $packet->getInputData();
-       // $response = DependencyInjection::DataTransferPacket();
+
         $userdata = array(
             'email'=>$input['email'],
             'password'=>$input['password'],
@@ -32,26 +32,29 @@ class AuthenticationController extends BaseController {
         return array();
 
     }
-    public function switchToRole() {
-        $input = Input::all();
-        $data = $input['data'];
+    public function switchToRole(DataTransferPacketInterface $packet) {
+        //$input = Input::all();
+        $data = $packet->getInputData();
 
         $currentSession = new SessionManager();
         $currentSession->reviveSessionFromCache();
         $roleDto = $currentSession->user->roles()->getById($data['roleId']);
         $currentSession->switchToRole($roleDto);
+        return json_encode(array('a','b'));
 
     }
-    public function refreshSession() {
-        $currentSession = new SessionManager();
-        $currentSession->reviveSessionFromCache();
-        $currentRoleDto = $currentSession->user->getCurrentRoleDto();
-
-        $SessionManager = $this->createNewSession(new SessionManager(new CacheController()));
-        $SessionManager->switchToRole($currentRoleDto);
-        $response = DependencyInjection::DataTransferPacket();
-        $response->addPassback(array('a'=>'b'));
-        return $response;
+    public function refreshSession(DataTransferPacketInterface $packet) {
+        echo "======\r\n";
+        var_dump($packet->getInputData());
+        echo "======\r\n";
+//        $currentSession = new SessionManager();
+//        $currentSession->reviveSessionFromCache();
+//        //$currentRoleDto = $currentSession->user->getCurrentRoleDto();
+//
+//        $SessionManager = $this->createNewSession(new SessionManager(new CacheController()));
+//        $SessionManager->switchToRole($packet);
+//
+//        return json_encode(array('a','b'));
     }
     public function createNewSession(SessionManager $SessionManager) {
 
@@ -61,6 +64,9 @@ class AuthenticationController extends BaseController {
 //            $SessionManager->loadAuthorizations();
         $SessionManager->loadFeatureCodes();
         $SessionManager->loadFeatureFlips($roleDto);
+
+        $SessionManager->loadAuthorizationCodes();
+        $SessionManager->loadAuthorizations($roleDto);
 
         $SessionManager->switchToRole($roleDto);
         $SessionManager->saveSessionToCache();

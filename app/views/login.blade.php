@@ -81,7 +81,7 @@
 
             controller.page.ajax.send(
                 {
-                    url:'ajax/auth/login',
+                    url:'public/auth/login',
                     data:{
                         'email':email,
 						'password':password
@@ -119,6 +119,7 @@
 	});
 
 	function receiveAuthentication(data) {
+        controller.page.blind.hide();
 	    alert(JSON.stringify(data));
 	    if(data.hasErrors) {
 	        alert("NO way dude!!");

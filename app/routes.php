@@ -23,46 +23,33 @@ Route::match(array('GET','POST'),'modal/{view}',array('before'=>'auth', function
     //$data = (new ModalViewController)->getModalView($view);
     return (new ModalViewController)->getModalView($view); //(new ApiController($class,$method,Input::all()))->call();
 }));
-//'ModalViewController@getModalView');
-
-//
-//Route::match(array('GET','POST'),'modal/{view}','ModalViewController@getModalView');
-//
-//Route::match(array('GET','POST'),'admin/account/settings/labels',array('before'=>'auth', function() {
-//    return PageTextController::processText(View::make('secure.admin.account.settings.labels'));
-//}));
-//
-//Route::match(array('GET','POST'),'dashboard',array('before'=>'auth', function() {
-//    $bladeFile = 'secure.dashboard.admin.layout';
-//    return View::make($bladeFile);
-//}));
-//
 
 
 Route::match(array('GET','POST'),'secure/api/{class}/{method}',array('before'=>'auth', function($class,$method) {
-    return (new ApiController($class,$method,Input::all()))->call();
+    $DTP = DependencyInjection::DataTransferPacket();
+    $DTP->loadFromReceivedAjaxCall(Input::all(),$class,$method);
+    return (new ApiController($DTP))->call();
 }));
 Route::match(array('GET','POST'),'api/{class}/{method}',array(function($class,$method) {
-    return (new ApiController($class,$method,Input::all()))->call();
+    $DTP = DependencyInjection::DataTransferPacket();
+    $DTP->loadFromReceivedAjaxCall(Input::all(),$class,$method);
+    return (new ApiController($DTP))->call();
 }));
 Route::match(array('GET','POST'),'ajax/{class}/{method}',array(function($class,$method) {
-    return (new ApiController($class,$method,Input::all()))->call();
+    $DTP = DependencyInjection::DataTransferPacket();
+    $DTP->loadFromReceivedAjaxCall(Input::all(),$class,$method);
+    return (new ApiController($DTP))->call();
 }));
-//Route::match(array('GET','POST'),'api/test',array('before'=>'auth', function() {
-//    return (new ApiController('AuthenticationController@tester',Input::all()))->call();
-//}));
-//
-//
-//
+Route::match(array('GET','POST'),'public/{class}/{method}',array(function($class,$method) {
+    $DTP = DependencyInjection::DataTransferPacket();
+    $DTP->loadFromReceivedAjaxCall(Input::all(),$class,$method);
+    return (new ApiController($DTP))->call();
+}));
 
 
-
-Route::post('login','AuthenticationController@login');
-//Route::match(array('GET','POST'),'api/test','AuthenticationController@tester');
-//Route::match(array('GET','POST'),'test2','AuthenticationController@tester');
 Route::match(array('GET','POST'),'doLogout','AuthenticationController@doLogout');
-Route::match(array('GET','POST'),'switchRole',array('before'=>'auth', 'uses'=>'AuthenticationController@switchToRole'));
-Route::match(array('GET','POST'),'session/refresh',array('before'=>'auth', 'uses'=>'AuthenticationController@refreshSession'));
+//Route::match(array('GET','POST'),'switchRole',array('before'=>'auth', 'uses'=>'AuthenticationController@switchToRole'));
+//Route::match(array('GET','POST'),'session/refresh',array('before'=>'auth', 'uses'=>'AuthenticationController@refreshSession'));
 //// AJAX Responses
 //Route::get('utilities/stateList/{searchTerm?}','AjaxController@getListOfStates');
 

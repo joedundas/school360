@@ -13,7 +13,8 @@ class RouteMapper
         if($class === '') { throw new Exception('Ajax Call to class ' . $shortClass . ' not found in mapping tables'); }
         $method = \Config::get('ajax-routes.' . $shortClass . '.calls.' . $shortMethod . '.method','');
         if($method === '') { throw new Exception('Ajax call to class ' . $shortClass . ' and method ' . $shortMethod . ' not found'); }
-        return array('class'=>$class,'method'=>$method);
+        $requiresAuth = \Config::get('ajax-routes.' . $shortClass . '.calls.' . $shortMethod . '.requires.auth',true);
+        return array('class'=>$class,'method'=>$method,'requiresAuth'=>$requiresAuth);
     }
 
 }

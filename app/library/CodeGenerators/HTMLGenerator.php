@@ -16,7 +16,7 @@ class HTMLGenerator
         $showSchoolName = isset($params['showSchool']) ? $params['showSchool'] : false;
 
 
-
+        $clickToLogin  = true;
 
         $cardHtml = '
     <div class="col-md-12 col-sm-12 col-xs-12 profile_details" ';
