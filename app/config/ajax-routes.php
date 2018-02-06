@@ -11,7 +11,7 @@ return [
                 )
             ],
             'refresh'=>[
-                'method'=>'tester',
+                'method'=>'refreshSession',
                 'requires'=>array(
                     'auth'=>true
                 )

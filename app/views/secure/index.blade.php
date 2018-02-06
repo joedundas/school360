@@ -1,6 +1,12 @@
 <?php
 $goToPage = '';
 $PAGE = (new SessionManager())->reviveSessionFromCache();
+$loadAuthorizationsFromCache = \Edu3Sixty\SettingsController::getStatus('auth-cache',$PAGE->user->getUserId(),$PAGE->getCurrentSchoolId(),$PAGE->getCurrentRoleId());
+
+//echo "[[" . $PAGE->getCurrentRoleId() . "]]";
+//echo "[[" . $loadAuthorizationsFromCache . "]]";
+//echo "[[" . $PAGE->authorizations->isAuthorized('add_staff') . "]]";
+
 
 ?>
 <!DOCTYPE html>
@@ -120,19 +126,19 @@ $PAGE = (new SessionManager())->reviveSessionFromCache();
 
 <script>
 function receiveTestResults(dta) {
-   alert(JSON.stringify(dta));
+  // alert(JSON.stringify(dta));
 }
 $(document).ready(function() {
 
-    controller.page.ajax.send(
-        {
-          url:'ajax/auth/test',
-            data:{'a':'b'},
-            'callback': {
-              'success':receiveTestResults
-            }
-        }
-    );
+//    controller.page.ajax.send(
+//        {
+//          url:'ajax/auth/test',
+//            data:{'a':'b'},
+//            'callback': {
+//              'success':receiveTestResults
+//            }
+//        }
+//    );
 
 
 //    setTimeout(function() {

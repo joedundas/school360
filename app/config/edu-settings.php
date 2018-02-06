@@ -13,6 +13,20 @@ return [
         ),
         'role'=>array()
     ),
+    'auth-cache'=>array(
+        'default'=>'off',
+        'order'=>array('user','school','role'),
+        'user'=>array(
+                '6'=>'on'
+        ),
+        'school'=>array(
+           // '1'=>'on'
+        ),
+        'role'=>array(
+            '6'=>'on',
+            '7'=>'off'
+        )
+    ),
     'feature-flip-cache'=>array(
         'default'=>'off',
         'order'=>array('user','school','role'),

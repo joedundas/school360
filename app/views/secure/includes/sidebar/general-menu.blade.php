@@ -29,7 +29,7 @@
             <ul class="nav child_menu">
                 <li><a href="calendar">General Calendar</a></li>
                 <?php
-                    if($PAGE->featureFlips->getFeatureFlipStatus('schedule:menu') === 'on') {
+                    if($PAGE->featureFlips->isEnabled('schedule:menu') === 'on') {
                 echo "<li><a href='page_404.html'>Menus</a></li>";
                         }
                 ?>

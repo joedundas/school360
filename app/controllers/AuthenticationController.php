@@ -44,22 +44,25 @@ class AuthenticationController extends BaseController {
 
     }
     public function refreshSession(DataTransferPacketInterface $packet) {
-        echo "======\r\n";
-        var_dump($packet->getInputData());
-        echo "======\r\n";
-//        $currentSession = new SessionManager();
-//        $currentSession->reviveSessionFromCache();
-//        //$currentRoleDto = $currentSession->user->getCurrentRoleDto();
-//
-//        $SessionManager = $this->createNewSession(new SessionManager(new CacheController()));
-//        $SessionManager->switchToRole($packet);
+
+        $currentSession = new SessionManager();
+        $currentSession->reviveSessionFromCache();
+        $currentRoleDto = $currentSession->user->getCurrentRoleDto();
+        //$packet->setInputData(array('roleId'=>$currentRoleDto->getRoleId()));
+        $SessionManager = $this->createNewSession(new SessionManager(new CacheController()),$currentRoleDto->getRoleId());
+        //$SessionManager->switchToRole($packet);
+
+
 //
 //        return json_encode(array('a','b'));
     }
-    public function createNewSession(SessionManager $SessionManager) {
+    public function createNewSession(SessionManager $SessionManager, $roleId = false) {
 
         $SessionManager->cache->flush();
-        $roleDto = $SessionManager->loadUser(Auth::user()->id);
+        $roleDto = $SessionManager->loadUser(Auth::user()->id,$roleId);
+//        if($roleId !== false) {
+//            echo "[[" . $roleId . "]]";
+//        }
         $SessionManager->loadAuthViews();
 //            $SessionManager->loadAuthorizations();
         $SessionManager->loadFeatureCodes();

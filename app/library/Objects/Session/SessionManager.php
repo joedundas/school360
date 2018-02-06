@@ -13,12 +13,13 @@ class SessionManager
     public $cache;
 
     public $user;
-    public $authorizationsDao;
+    public $authorizations;
     public $authViewsDao;
     public $featureFlips;
 
     // Dto collections
     public $authViewsCollection;
+
     public $featureCodesCollection;
     public $featureFlipsCollection = array(); // array of collections hashed by school ID
 
@@ -43,7 +44,10 @@ class SessionManager
        $this->featureFlips->setFeatureFlipsCollection($this->featureFlipsCollection[$schoolId]);
 
 
-   //     var_dump($this->featureFlipsCollection[$schoolId]);
+       $this->authorizations->setAuthCodesCollection($this->authorizationCodesCollection);
+       $this->loadAuthorizations($roleDto);
+       $this->authorizations->setRoleAuthsCollection($this->authorizationsCollection[$roleDto->getRoleId()]);
+
 
         $this->saveSessionToCache();
     }
@@ -55,7 +59,7 @@ class SessionManager
         $this->cache = $cache;  // finished
         $this->user = new UserDao(new UserDto()); // finished
         $this->authViewsDao = new AuthViewDao();
-        $this->authorizationsDao = new AuthorizationDao();
+        $this->authorizations = new AuthorizationDao();
         $this->featureFlips = new FeatureFlipDao();
         $this->featureCodesCollection = new FeatureCodesCollection();
         $this->authorizationCodesCollection = new AuthorizationsCollection();
@@ -68,19 +72,24 @@ class SessionManager
 
     }
 
-    public function loadUser($userId) {
+    public function loadUser($userId,$roleId = false) {
         $this->user->initiate($userId);
-        $defaultRoleDto = $this->user->roles()->getDefaultRoleDto();
 
-        if($defaultRoleDto === false) {
-            //@TODO - handle where there is no default role
-            throw new Exception('Could not initiate Session with a default role');
+        if($roleId === false) {
+            $roleDto = $this->user->roles()->getDefaultRoleDto();
+            if ($roleDto === false) {
+                //@TODO - handle where there is no default role
+                throw new Exception('Could not initiate Session with a default role');
+            }
+        }
+        else {
+            $roleDto = $this->user->roles()->getById($roleId);
         }
 
-        $this->setCurrentRoleId($defaultRoleDto->getRoleId());
-        $this->setCurrentSchoolId($defaultRoleDto->getSchoolId());
+        $this->setCurrentRoleId($roleDto->getRoleId());
+        $this->setCurrentSchoolId($roleDto->getSchoolId());
 
-        return $defaultRoleDto;
+        return $roleDto;
     }
     public function loadAuthViews() {
         $authViews = $this->authViewsRepository->getAuthViews();
@@ -108,6 +117,7 @@ class SessionManager
             $this->authorizationCodesCollection->add($dto);
         }
         $this->authorizationCodesCollection->setAuthsLoaded(true);
+
     }
     public function loadFeatureCodes() {
         $this->featureCodesCollection->reset();
@@ -210,6 +220,15 @@ class SessionManager
         $this->featureFlips->setFeatureFlipsCollection($this->featureFlipsCollection[$this->getCurrentSchoolId()]);
 
         $this->authorizationCodesCollection = unserialize($this->cache->get('authorizationCodes'));
+        $loadAuthorizationsFromCache = \Edu3Sixty\SettingsController::getStatus('auth-cache',$this->user->getUserId(),$this->getCurrentSchoolId(),$this->getCurrentRoleId());
+        if($loadAuthorizationsFromCache === 'on') {
+            $this->authorizationsCollection = unserialize($this->cache->get('authorizations'));
+        }
+        else {
+            $this->loadAuthorizations($this->user->getCurrentRoleDto());
+        }
+        $this->authorizations->setAuthCodesCollection($this->authorizationCodesCollection);
+        $this->authorizations->setRoleAuthsCollection($this->authorizationsCollection[$this->getCurrentRoleId()]);
         //$this->authorizations->setDto(unserialize($this->cache->get('authorizations')));
         return $this;
     }
