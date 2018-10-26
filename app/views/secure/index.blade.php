@@ -1,8 +1,9 @@
 <?php
 $goToPage = '';
 $PAGE = (new SessionManager())->reviveSessionFromCache();
-$loadAuthorizationsFromCache = \Edu3Sixty\SettingsController::getStatus('auth-cache',$PAGE->user->getUserId(),$PAGE->getCurrentSchoolId(),$PAGE->getCurrentRoleId());
 
+
+//$loadAuthorizationsFromCache = \Edu3Sixty\SettingsController::getStatus('auth-cache',$PAGE->user->getUserId(),$PAGE->getCurrentSchoolId(),$PAGE->getCurrentRoleId());
 //echo "[[" . $PAGE->getCurrentRoleId() . "]]";
 //echo "[[" . $loadAuthorizationsFromCache . "]]";
 //echo "[[" . $PAGE->authorizations->isAuthorized('add_staff') . "]]";
@@ -45,15 +46,15 @@ $loadAuthorizationsFromCache = \Edu3Sixty\SettingsController::getStatus('auth-ca
     }
 </style>
     <script>
-        var controller = new controller(
-            new pageController(
-                new modalController(),
-                new workingBlindController()
-            ),
-            new sessionController()
-        );
-
-        var ajax = new ajaxController();
+//        var controller = new controller(
+//            new pageController(
+//                new modalController(),
+//                new workingBlindController()
+//            ),
+//            new sessionController()
+//        );
+//
+//        var ajax = new ajaxController();
 
 
     </script>
@@ -119,10 +120,10 @@ $loadAuthorizationsFromCache = \Edu3Sixty\SettingsController::getStatus('auth-ca
 <script src="../vendors/fastclick/lib/fastclick.js"></script>
 
 
+<script src="/build/js/main.js"></script>
 
 
-
-<script src="../build/js/main.js"></script>
+{{--<script src="../build/js/main.js"></script>--}}
 
 <script>
 function receiveTestResults(dta) {
@@ -198,6 +199,7 @@ $(document).ready(function() {
     if(initiate_to_page == '') {
         initiate_to_page = 'dashboard';
     }
+
     navigateToPage(initiate_to_page);
     initiate_to_page = '';
 });

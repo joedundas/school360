@@ -9,6 +9,7 @@ class SeedTestingSchool extends Seeder
         DB::table('users')->delete();
         DB::table('user_school_mapper')->delete();
         DB::table('user_relationship_map')->delete();
+        DB::table('user_authorizations')->delete();
         DB::table('user_roles')->delete();
         $schoolId_1 = DB::table('schools')->insertGetId(
             array('name'=>'Testing School','address'=>'123 Banana Lane','city'=>'Phoenix','state'=>'AZ','zip'=>'850234567')
@@ -167,7 +168,10 @@ class SeedTestingSchool extends Seeder
             array('userId'=>$userId,'roleId'=>$roleId,'schoolId'=>$schoolId_2)
         );
         DB::table('user_authorizations')->insert(
-            array('roleId'=>$roleId,'schoolId'=>$schoolId_2,'permissionCode'=>'add_staff','permissionValue'=>'Y')
+            array(
+                array('roleId'=>$roleId,'schoolId'=>$schoolId_2,'permissionCode'=>'add_courses','permissionValue'=>'Y'),
+                array('roleId'=>$roleId,'schoolId'=>$schoolId_2,'permissionCode'=>'add_staff','permissionValue'=>'Y')
+            )
         );
 
 

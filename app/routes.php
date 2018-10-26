@@ -7,6 +7,11 @@ Route::get('login', function()
 Route::match(array('GET','POST'),'customer/list/{search?}',array('before'=>'auth', function($search='') {
     return View::make('secure.personas.list',array('persona'=>'customer','search'=>$search));
 }));
+
+Route::match(array('GET','POST'),'courses/list/{search?}',array('before'=>'auth', function($search='') {
+    return View::make('secure.courses.list',array('persona'=>'customer','search'=>$search));
+}));
+
 Route::match(array('GET','POST'),'calendar',array('before'=>'auth', function($search='') {
     return View::make('secure.scheduler.calendar',array());
 }));
@@ -26,8 +31,10 @@ Route::match(array('GET','POST'),'modal/{view}',array('before'=>'auth', function
 
 
 Route::match(array('GET','POST'),'secure/api/{class}/{method}',array('before'=>'auth', function($class,$method) {
+
     $DTP = DependencyInjection::DataTransferPacket();
     $DTP->loadFromReceivedAjaxCall(Input::all(),$class,$method);
+
     return (new ApiController($DTP))->call();
 }));
 Route::match(array('GET','POST'),'api/{class}/{method}',array(function($class,$method) {

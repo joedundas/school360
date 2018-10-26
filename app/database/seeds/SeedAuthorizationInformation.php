@@ -33,6 +33,18 @@ class SeedAuthorizationInformation extends Seeder
                     'rolesRequired'=>null,
                     'rolesRestricted'=>json_encode(array('student','parent'),true)
                 ),
+//                array(
+//                    'item'=>'add_student',
+//                    'authorizationsRequired'=>json_encode(array('edit_student'),true),
+//                    'rolesRequired'=>null,
+//                    'rolesRestricted'=>json_encode(array('student','parent'),true)
+//                ),
+//                array(
+//                    'item'=>'edit_student',
+//                    'authorizationsRequired'=>json_encode(array('add_student'),true),
+//                    'rolesRequired'=>null,
+//                    'rolesRestricted'=>json_encode(array('student','parent'),true)
+//                ),
             )
         );
     }
@@ -57,6 +69,26 @@ class SeedAuthorizationInformation extends Seeder
     public function seedCodes() {
         DB::table('authorization_types')->insert(
             array(
+                array(
+                    'permissionCategory'=>'SchoolAdmin',
+                    'permissionSubCategory'=>'Courses',
+                    'entryOrder'=>0,
+                    'requires'=>null,
+                    'defaultValue'=>'N',
+                    'title'=>'Add Courses',
+                    'permissionCode'=>'add_courses',
+                    'description'=>'Can add new courses to school course list'
+                ),
+                array(
+                    'permissionCategory'=>'SchoolAdmin',
+                    'permissionSubCategory'=>'Courses',
+                    'entryOrder'=>0,
+                    'requires'=>null,
+                    'defaultValue'=>'N',
+                    'title'=>'Edit Courses',
+                    'permissionCode'=>'edit_courses',
+                    'description'=>'Can edit courses from school course list'
+                ),
                 array(
                     'permissionCategory'=>'Billing',
                     'permissionSubCategory'=>'',
@@ -98,6 +130,28 @@ class SeedAuthorizationInformation extends Seeder
                     'title'=>'Edit Current Staff Members',
                     'permissionCode'=>'edit_staff',
                     'description'=>'Can edit staff'
+                ),
+
+                array(
+                    'permissionCategory'=>'Students',
+                    'permissionSubCategory'=>'Students',
+                    'entryOrder'=>0,
+                    'requires'=>null,
+                    'defaultValue'=>'N',
+                    'title'=>'Add New Students',
+                    'permissionCode'=>'add_student',
+                    'description'=>'Can add new students to the school'
+                ),
+
+                array(
+                    'permissionCategory'=>'Students',
+                    'permissionSubCategory'=>'Students',
+                    'entryOrder'=>1,
+                    'requires'=>null,
+                    'defaultValue'=>'N',
+                    'title'=>'Edit Current Students',
+                    'permissionCode'=>'edit_student',
+                    'description'=>'Can edit students'
                 ),
 
             )

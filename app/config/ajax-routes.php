@@ -30,5 +30,22 @@ return [
             ]
         ]
     ],
+    'courses'  =>  [
+        'class'=>'CoursesController',
+        'calls'=>[
+            'add'=>[
+                'method'=>'add',
+                'requires'=>array(
+                    'auth'=>true
+                )
+            ],
+            'list'=>[
+                'method'=>'get',
+                'requires'=>array(
+                    'auth'=>true
+                )
+            ]
+        ]
+    ],
 
 ];

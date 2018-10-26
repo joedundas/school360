@@ -25,20 +25,7 @@ class ModalViewController extends BaseController {
                 'title'=>$vw->title
             )
         );
-//        $response->addPassback(
-//            array(
-//                'html'=> $html->render(),
-//                'width'=>$vw->width,
-//                'title'=>$vw->title
-//            )
-//        );
-//        $sendBack = array(
-//            'output'=>array(
-//                'html'=> $html->render(),
-//                'width'=>$vw->width,
-//                'title'=>$vw->title
-//            )
-//        );
+
 
         return $packet->toJson();
     }

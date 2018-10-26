@@ -240,10 +240,10 @@ class DataTransferPacket implements DataTransferPacketInterface
         $this->setDiagnosticTime('server','sent',$time);
     }
     public function setClientSentTime($time = false) {
-        $this->setDiagnosticTime('client','sent',strtotime($time));
+        $this->setDiagnosticTime('client','sent',$time);
     }
     public function setClientReceivedTime($time = false) {
-        $this->setDiagnosticTime('client','received',strtotime($time));
+        $this->setDiagnosticTime('client','received',$time);
     }
     private function setDiagnosticTime($side,$end,$time = false) {
         if($time === false) {

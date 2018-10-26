@@ -47,6 +47,7 @@
         </li>
         <li><a><i class="fa fa-briefcase"></i> Administration<span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">
+                <li><a href="courses/list">Courses</a></li>
                 {{--<li><a href="admin/user/add/parent">Add Parent</a></li>--}}
                 {{--<li><a href="admin/user/add/student">Add Students</a></li>--}}
                 {{--<li><a href="admin/user/add/teacher">Add Teacher</a></li>--}}
