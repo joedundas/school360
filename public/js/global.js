@@ -23,6 +23,7 @@ function modalController() {
         if(typeof me.params.view === 'undefined' || me.params.view === '') {
             return 1;
         }
+
         controller.page.ajax.send(
            {
              url:me.params.view,
@@ -37,6 +38,7 @@ function modalController() {
     }
 
     me.display = function(data) {
+
         var modalSize = data.width;
         var divString = '' +
         '<div class="modal fade bs-example-modal-' + modalSize + '" tabindex="-1" role="dialog" aria-hidden="true" id="biz-modal-dialog">' +
@@ -62,7 +64,7 @@ function modalController() {
         '</div>';
 
         var $newdiv = $(divString).appendTo('body');
-
+        //
         $('#biz-modal-dialog').modal('show');
 
         $('#biz-modal-dialog').on('show.bs.modal', function() {
@@ -267,7 +269,7 @@ function ajaxController() {
             'diagnostics': {
                 'time': {
                     'local': {
-                        'sent':controller.page.helpers.timeStamp(),
+                        'sent':false,
                         'received':false
                     },
                     'server': {
@@ -281,7 +283,7 @@ function ajaxController() {
 
     me.send = function(input) {
         var params = controller.page.helpers.loadInputParams(me.defaults(),input);
-
+        params.diagnostics.time.local.sent = controller.page.helpers.timeStamp();
         if(
             params.blockUntilDone &&
             params.url in me.openChannels &&

@@ -96,6 +96,7 @@ function init_ToolbarBootstrapBindings() {
 
 
 function navigateToPage(pageRoute) {
+
     $('#pageMainContent').load(pageRoute, function() {
         $(window).trigger( 'load' );
     });
@@ -200,5 +201,17 @@ function init_sidebar() {
 
 $(document).ready(function() {
     init_sidebar();
-    init_ToolbarBootstrapBindings()
+    init_ToolbarBootstrapBindings();
+
+
 });
+
+       var controller = new controller(
+           new pageController(
+               new modalController(),
+               new workingBlindController()
+           ),
+           new sessionController()
+       );
+
+       var ajax = new ajaxController();
